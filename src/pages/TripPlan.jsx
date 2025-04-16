@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom"
 
 
-// 旅行日数を計算
+// 旅行プラン作成ページ
+
 export default function TripPlan() {
   const { state } = useLocation();
   // 何日目のプランなのかを管理

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 
 // 管理画面ページ
-
 export default function Management() {
   return (
     <>

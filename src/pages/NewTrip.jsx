@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// 旅行名と日付を入力するページ
+
 export default function NewTrip() {
   const [tripData, setTripData] = useState({});
   const navigate = useNavigate();
