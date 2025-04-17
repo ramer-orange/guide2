@@ -13,20 +13,22 @@ export default function TripPlan() {
 
   // 旅行開始日と日数(〇日目)から、該当日付の文字列 (/MM/DD形式) を計算して返す
   const calculateDay = (selectedDay) => {
+    console.log(stateDate)
     // 旅行開始日が選択されている時のみ
-    if (stateDate.selectedDay){
-      const startDate = new Date(stateDate?.startDay);
+    if (stateDate.startDay){
+      const startDate = new Date(stateDate.startDay);
       startDate.setDate(startDate.getDate() + selectedDay - 1);
       const options = {
         month: 'numeric',
         day: 'numeric',
       }
+      console.log(startDate);
       return startDate.toLocaleDateString("ja-JP", options);
     }
   };
 
-  // 出発日と帰着日の差を計算
-  const calculateDiffDay = useMemo(() => {
+  // 出発日と帰着日の差(ミリ秒)を計算
+  const calculateDiffTime = useMemo(() => {
     if(stateDate?.startDay && stateDate?.finishDay) {
       const startDay = new Date(stateDate.startDay);
       const finishDay = new Date(stateDate.finishDay);
@@ -40,13 +42,13 @@ export default function TripPlan() {
   const totalDays = useMemo(() => {
     let countDay = 1;
     if(stateDate?.startDay && stateDate?.finishDay) {
-      const diffTime = calculateDiffDay;
+      const diffTime = calculateDiffTime;
       if(diffTime >= 0) {
         countDay = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
       }
     }
     return countDay;
-  }, [stateDate?.startDay, stateDate?.finishDay, calculateDiffDay]);
+  }, [stateDate?.startDay, stateDate?.finishDay, calculateDiffTime]);
 
   // プランデータを日付とリンク(初期設定)
   const initialPlanContents = useMemo(() => {
