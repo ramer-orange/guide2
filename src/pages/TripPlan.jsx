@@ -62,23 +62,29 @@ export default function TripPlan() {
   // プラン内容を管理
   const [planContents, setPlanContents] = useState(initialPlanContents);
 
-  // 日数が増えた時の初期値をマージ
+  // 日数の増減時の処理
   useEffect(() => {
+    // let  decrease_day = false;
     setPlanContents(prev => {
       const next = {...prev};
 
+      // 日数は増えた時
       for (let day = 1; day <= totalDays; day++) {
         if(!(day in next)) {
           next[day] = {time: '', content: ''}
         }
       }
+
+      // // 日数が減った時
+      // Object.keys(next).forEach(key => {
+      //   const dayNum = Number(key);
+      //   if(dayNum > totalDays) {
+      //     delete next[key];
+      //   }
+      // })
       return next;
     });
   }, [totalDays]);
-
-  // useEffect(() => {
-  //   setPlanContents(initialPlanContents)
-  // }, [initialPlanContents]);
 
   // 押されたボタンが何日目なのか
   const handleSelectedDay = (index) => {
