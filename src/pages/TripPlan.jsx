@@ -111,10 +111,22 @@ export default function TripPlan() {
 
   // 日付の更新
   const handleSetDate = (e) => {
-    setStateDate({
-      ...stateDate,
-      [e.target.name]: e.target.value
-    })
+    const { name, value } = e.target;
+
+    setStateDate(prev => {
+      const next = {...prev, [name]: value};
+
+      // 帰着日が出発日よりも早い場合
+      if (next.startDay && next.finishDay) {
+        if (next.startDay > next.finishDay) {
+          alert('帰着日が出発日よりも早いです。');
+          return prev;
+        }
+      }
+
+      // 正常な場合は入力値を返す
+      return next;
+    });
   }
 
   // 現在選択されている日のプランの内容を取得
