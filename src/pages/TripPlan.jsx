@@ -64,7 +64,6 @@ export default function TripPlan() {
 
   // 日数の増減時の処理
   useEffect(() => {
-    // let  decrease_day = false;
     setPlanContents(prev => {
       const next = {...prev};
 
@@ -75,16 +74,23 @@ export default function TripPlan() {
         }
       }
 
-      // // 日数が減った時
-      // Object.keys(next).forEach(key => {
-      //   const dayNum = Number(key);
-      //   if(dayNum > totalDays) {
-      //     delete next[key];
-      //   }
-      // })
+      // 日数が減った時
+      Object.keys(next).forEach(key => {
+        const dayNum = Number(key);
+        if(dayNum > totalDays) {
+          delete next[key];
+        }
+      })
       return next;
     });
   }, [totalDays]);
+
+  useEffect(() => {
+    // 選択日が範囲外になったら最新の範囲内に戻す
+    if (selectedDay > totalDays ) {
+      setSelectedDay(totalDays);
+    }
+  },[totalDays]);
 
   // 押されたボタンが何日目なのか
   const handleSelectedDay = (index) => {
@@ -112,7 +118,10 @@ export default function TripPlan() {
   }
 
   // 現在選択されている日のプランの内容を取得
+  console.log('planContents',planContents);
+  console.log('selectedDay',selectedDay);
   const currentDayPlan = planContents[selectedDay];
+  console.log('currentDayPlan',currentDayPlan);
 
   return (
     <>
