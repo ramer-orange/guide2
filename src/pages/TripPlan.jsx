@@ -142,6 +142,14 @@ export default function TripPlan() {
     });
   }
 
+  // プランデータの削除
+  const handlePlanDelete = (index) => {
+    setPlanContents(prev => ({
+      ...prev,
+      [selectedDay]: prev[selectedDay].filter((_, i) => i !== index)
+    }));
+  }
+
   // 現在選択されている日のプランの内容を取得
   const currentDayPlan = planContents[selectedDay];
 
@@ -187,6 +195,7 @@ export default function TripPlan() {
                       <label htmlFor="content">
                         <textarea name="content" id="content" value={plan.content} onChange={e => handlePlanChange(index, e)}></textarea>
                       </label>
+                      <button onClick={() => (handlePlanDelete(index))}>削除</button>
                   </div>
                   )
                 })}
@@ -194,7 +203,7 @@ export default function TripPlan() {
             </div>
           </div>
           <div>
-            <button onClick={() => handleAddPlan()}>メモを追加</button>
+            <button onClick={handleAddPlan}>メモを追加</button>
           </div>
         </div>
       </div>
