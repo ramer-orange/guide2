@@ -10,10 +10,11 @@ export default function TripPlan() {
   const [selectedDay, setSelectedDay] = useState(1);
   const [stateDate, setStateDate] = useState(state);
 
+  // 最初に挿入するためのプランデータ
+  const initialPlanData = {time: '', content: ''};
 
   // 旅行開始日と日数(〇日目)から、該当日付の文字列 (/MM/DD形式) を計算して返す
   const calculateDay = (selectedDay) => {
-    console.log(stateDate)
     // 旅行開始日が選択されている時のみ
     if (stateDate.startDay){
       const startDate = new Date(stateDate.startDay);
@@ -22,7 +23,6 @@ export default function TripPlan() {
         month: 'numeric',
         day: 'numeric',
       }
-      console.log(startDate);
       return startDate.toLocaleDateString("ja-JP", options);
     }
   };
@@ -54,13 +54,26 @@ export default function TripPlan() {
   const initialPlanContents = useMemo(() => {
     const contents = {};
     for (let day = 1; day <= totalDays; day++){
-      contents[day] = {time: '', content: ''}
+      contents[day] = [initialPlanData]
     }
     return contents;
   }, [totalDays]);
 
   // プラン内容を管理
   const [planContents, setPlanContents] = useState(initialPlanContents);
+
+  // 追加ボタンが押された時の処理(選択された日のみに初期データを挿入)
+  const handleAddPlan = () => {
+    setPlanContents(prev => (
+      {
+        ...prev,
+        [selectedDay]: [
+          ...prev[selectedDay],
+          initialPlanData
+        ]
+      })
+    )
+  };
 
   // 日数の増減時の処理
   useEffect(() => {
@@ -98,14 +111,14 @@ export default function TripPlan() {
   }
 
   // 選択中の日のプラン内容（時間または内容）を変更するハンドラ
-  const handlePlanChange = (e) => {
+  const handlePlanChange = (index, e) => {
     const { name, value } = e.target;
-    setPlanContents((prevPlanContents) => ({
-      ...prevPlanContents, // 他の日の内容はそのまま維持
-      [selectedDay]: { // 現在選択中の日のオブジェクトを更新
-        ...prevPlanContents[selectedDay],
-        [name]: value, // 変更されたフィールドを新しい値で更新
-      },
+    setPlanContents(prev => ({
+      ...prev,
+      // 変更箇所を特定し、変更
+      [selectedDay]: prev[selectedDay].map((plan, i) =>
+      i === index ? {...plan, [name]: value} : plan
+      )
     }));
   };
 
@@ -130,10 +143,7 @@ export default function TripPlan() {
   }
 
   // 現在選択されている日のプランの内容を取得
-  console.log('planContents',planContents);
-  console.log('selectedDay',selectedDay);
   const currentDayPlan = planContents[selectedDay];
-  console.log('currentDayPlan',currentDayPlan);
 
   return (
     <>
@@ -167,13 +177,24 @@ export default function TripPlan() {
             <p>Day {selectedDay}</p>
             <span>{calculateDay(selectedDay)}</span>
             <div>
-              <label htmlFor="time">
-                <input type="time" id="time" name="time" value={currentDayPlan.time} onChange={handlePlanChange}/>
-              </label>
-              <label htmlFor="content">
-                <textarea name="content" id="content" value={currentDayPlan.content} onChange={handlePlanChange}></textarea>
-              </label>
+              <div>
+                {currentDayPlan.map((plan, index) => {
+                  return (
+                    <div key={index}>
+                      <label htmlFor="time">
+                        <input type="time" id="time" name="time" value={plan.time} onChange={e => handlePlanChange(index, e)}/>
+                      </label>
+                      <label htmlFor="content">
+                        <textarea name="content" id="content" value={plan.content} onChange={e => handlePlanChange(index, e)}></textarea>
+                      </label>
+                  </div>
+                  )
+                })}
+              </div>
             </div>
+          </div>
+          <div>
+            <button onClick={() => handleAddPlan()}>メモを追加</button>
           </div>
         </div>
       </div>
