@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 
 // 旅行プラン作成ページ
@@ -158,6 +158,9 @@ export default function TripPlan() {
       <div>
         <div>
           <h2>プラン作成</h2>
+          <Link to="/management">
+            <button>管理画面へ戻る</button>
+          </Link>
           <div>
             <h3>{state?.tripName}</h3>
             <div>

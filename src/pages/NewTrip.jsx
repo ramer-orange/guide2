@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // 旅行名と日付を入力するページ
 
@@ -21,6 +21,9 @@ export default function NewTrip() {
   return (
     <div>
       <h2>新しい旅行プランを作成</h2>
+      <Link to="/management">
+          <button>管理画面へ戻る</button>
+      </Link>
       <div>
         <div>
           <label htmlFor="tripName">旅行タイトル</label>
