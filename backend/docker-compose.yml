@@ -1,0 +1,56 @@
+services:
+  # Laravel APIサーバー
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trip-api
+    restart: unless-stopped
+    working_dir: /var/www/html
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/var/www/html
+      - ./vendor:/var/www/html/vendor
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=trip_app
+      - DB_USERNAME=trip_user
+      - DB_PASSWORD=trip_password
+      - APP_ENV=local
+      - APP_KEY=base64:your-app-key-here
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8000
+    networks:
+      - trip-network
+    depends_on:
+      - db
+  
+  # MySQLデータベース
+  db:
+    image: mysql:8.0
+    container_name: trip-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: trip_app
+      MYSQL_USER: trip_user
+      MYSQL_PASSWORD: trip_password
+      MYSQL_ROOT_PASSWORD: root_password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3307:3306"
+    volumes:
+      - trip-db-data:/var/lib/mysql
+    networks:
+      - trip-network
+
+networks:
+  trip-network:
+    driver: bridge
+
+volumes:
+  trip-db-data:
+    driver: local
