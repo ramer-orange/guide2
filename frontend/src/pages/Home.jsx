@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import TestApi from "../componets/TestApi"
 
 // サイトトップページ
 
@@ -10,6 +11,9 @@ export default function Home() {
         <Link to="/management">
           <button>管理画面へ</button>
         </Link>
+        <div style={{ marginTop: '2rem' }}>
+          <TestApi />
+        </div>
       </div>
     </>
   )

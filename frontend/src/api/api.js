@@ -6,7 +6,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true, // Cookieベースの認証を使用する場合
+  withCredentials: false, // Cookieベースの認証を使用する場合
 });
 
 export default api;
