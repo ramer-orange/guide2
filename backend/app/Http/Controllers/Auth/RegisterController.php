@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -13,14 +12,11 @@ class RegisterController extends Controller
     public function register(Request $request) {
         $data = $request->all();
 
-        $validator = Validator::make($data, [
-            'name' => ['required', 'max:255'],
-            'email' => ['required', 'email:rfc,dns', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::min(8)],
-        ]);
+        // バリデーション済みデータの取得
+        $validated = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()], 422);
         }
 
         $user = User::create([
