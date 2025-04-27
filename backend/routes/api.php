@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,10 +9,5 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 
-Route::post('/echo', function (Request $request) {
-    return response()->json([
-        'received' => true,
-        'data' => $request->all(),
-        'timestamp' => now()
-    ]);
-});
+// Route::get('/register', [RegisterController::class, 'index']);
+Route::post('/register', [RegisterController::class, 'register']);
