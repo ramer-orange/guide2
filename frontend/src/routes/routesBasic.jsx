@@ -5,15 +5,28 @@ import TripPlan from "../pages/TripPlan";
 import NewTrip from "../pages/NewTrip";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ProtectedRoute from "./../components/ProtectedRoute";
 
 
 const routesBasic = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Home />} />
-      <Route path="/management" element={<Management />} />
-      <Route path="/trip-plan" element={<TripPlan />} />
-      <Route path="/new-trip" element={<NewTrip />} />
+      <Route path="/management" element={
+          <ProtectedRoute>
+            <Management />
+          </ProtectedRoute>
+        }/>
+        <Route path="/trip-plan" element={
+          <ProtectedRoute>
+            <TripPlan />
+          </ProtectedRoute>
+        }/>
+        <Route path="/new-trip" element={
+          <ProtectedRoute>
+            <NewTrip />
+          </ProtectedRoute>
+        }/>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
     </>

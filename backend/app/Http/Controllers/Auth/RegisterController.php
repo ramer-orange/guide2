@@ -10,46 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
     public function register(Request $request) {
         // password_repeatをpassword_confirmationに変換
         $data = $request->all();
@@ -73,6 +33,15 @@ class RegisterController extends Controller
             'password' => bcrypt($request->password), // パスワードをハッシュ化
         ]);
 
-        return response()->json(['message' => 'ユーザーが正常に登録されました', 'user' => $user], 201);
+        $token = $user->createToken('auth-token')->plainTextToken;
+        return response()->json([
+            'message' => 'ユーザーが正常に登録されました',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'token' => $token
+        ], 201);
     }
 }
