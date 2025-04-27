@@ -11,11 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class RegisterController extends Controller
 {
     public function register(Request $request) {
-        // password_repeatをpassword_confirmationに変換
         $data = $request->all();
-        if (isset($data['password_repeat'])) {
-            $data['password_confirmation'] = $data['password_repeat'];
-        }
 
         $validator = Validator::make($data, [
             'name' => ['required', 'max:255'],

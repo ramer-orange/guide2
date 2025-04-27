@@ -1,4 +1,3 @@
-// Register.jsxの改善案
 import React, { useState } from 'react';
 import { FormContainer, TextFieldElement, PasswordElement, PasswordRepeatElement } from 'react-hook-form-mui';
 import { Box, Typography, Button, Alert } from '@mui/material';
