@@ -27,7 +27,7 @@ services:
       - trip-network
     depends_on:
       - db
-  
+
   # MySQLデータベース
   db:
     image: mysql:8.0
@@ -46,6 +46,24 @@ services:
       - trip-db-data:/var/lib/mysql
     networks:
       - trip-network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: trip-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      UPLOAD_LIMIT: 300M
+    ports:
+      - "8085:80"
+    networks:
+      - trip-network
+    depends_on:
+      - db
 
 networks:
   trip-network:
