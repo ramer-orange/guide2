@@ -11,7 +11,7 @@ export default function Register() {
   const onSuccess = async (data) => {
     setError('')
     try {
-      const response = await axios.post('http://localhost:8000/api/register', data, {
+      const response = await axios.post('/api/register', data, {
         headers: { 'Content-Type': 'application/json' }
       })
       console.log('API レスポンス:', response.data)
@@ -20,7 +20,7 @@ export default function Register() {
       console.error('登録に失敗しました:', error.response || error)
       if (error.response && error.response.data && error.response.data.errors) {
         // バリデーションエラーの処理
-        const errorMessages = Object.values(error.response.data.errors).flat()
+        const errorMessages = Object.values(error.response.data.errors).flat() // 1次元配列に変換
         setError(errorMessages.join(' '))
       } else {
         setError('登録に失敗しました。もう一度お試しください。')
