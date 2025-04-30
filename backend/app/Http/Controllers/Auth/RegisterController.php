@@ -3,26 +3,23 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request) {
-        $data = $request->all();
+    public function register(RegisterRequest $request) {
 
         // バリデーション済みデータの取得
-        $validated = $request->validated();
-
-        if ($validated->fails()) {
-            return response()->json(['errors' => $validated->errors()], 422);
-        }
+        $data = $request->validated();
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password), // パスワードをハッシュ化
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']), // パスワードをハッシュ化
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
