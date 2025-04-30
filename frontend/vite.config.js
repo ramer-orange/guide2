@@ -8,5 +8,19 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8000'
     }
-  }
+  },
+  resolve: {
+    alias: {
+      crypto: 'crypto-browserify',
+      stream: 'stream-browserify'
+    }
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      // Node.js global to browser globalThis
+      define: {
+        global: 'globalThis',
+      },
+    },
+  },
 })

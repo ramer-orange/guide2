@@ -1,5 +1,8 @@
-# ベースイメージとして Node.js の軽量版を利用
-FROM node:16-alpine
+# ベースイメージとして Node.js の最新の軽量版を利用
+FROM node:20-alpine
+
+# Node.jsの環境変数を設定
+ENV NODE_OPTIONS="--no-experimental-fetch --experimental-global-webcrypto"
 
 # 作業ディレクトリの作成
 WORKDIR /app

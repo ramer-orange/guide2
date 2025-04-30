@@ -9,3 +9,5 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - NODE_OPTIONS=--no-experimental-fetch --experimental-global-webcrypto
+      - VITE_CJS_IGNORE_WARNING=true
