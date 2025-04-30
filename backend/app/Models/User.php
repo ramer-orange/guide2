@@ -46,4 +46,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // プランのリレーション
+    public function plans()
+    {
+        return $this->hasMany(Plan::class);
+    }
 }
