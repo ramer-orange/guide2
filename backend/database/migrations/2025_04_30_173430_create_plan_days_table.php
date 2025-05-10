@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('plan_days', function (Blueprint $table) {
             $table->id();
             $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
-            $table->integer('day_number')->comment('何日目か');
+            $table->integer('day_number')->require->min(1)->comment('何日目か');
             $table->date('date')->comment('日付');
             $table->timestamps();
         });
