@@ -1,6 +1,7 @@
 import { api } from "../api/api";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom"
+import { schemas } from "../validation";
 
 
 // 旅行プラン作成ページ
@@ -13,13 +14,19 @@ export default function TripPlan() {
   const [error, setError] = useState('');
 
   // API側にデータを送信
-  const handleTripPlanUpdate = async (next) => {
+  const handleTripPlanUpdate = async (data) => {
     try {
-      const response = await api.put(`/plans/${state.id}`, next);
+      const validatedData = schemas.tripSchema.parse(data);
+      const response = await api.put(`/plans/${state.id}`, validatedData);
       console.log(response);
     } catch (error) {
-      setError(error.response.data.message);
-      console.error('プランの更新に失敗しました。', error);
+      if (error.name === 'ZodError') {
+        const allErrors = error.errors.map(error => error.message).join('\n');
+        setError(allErrors);
+      } else if (error.response) {
+        setError(error.response.data.message);
+        console.error('プランの更新に失敗しました。', error);
+      }
     }
   }
 
@@ -140,20 +147,12 @@ export default function TripPlan() {
     const { name, value } = e.target;
 
     setStateDate(prev => {
-      const next = {...prev, [name]: value};
-
-      // 帰着日が出発日よりも早い場合
-      if (next.startDay && next.endDay) {
-        if (next.startDay > next.endDay) {
-          alert('帰着日が出発日よりも早いです。');
-          return prev;
-        }
-      }
+      const data = {...prev, [name]: value};
 
       // API側にデータを送信
-      handleTripPlanUpdate(next);
+      handleTripPlanUpdate(data);
 
-      return next;
+      return data;
     });
   }
 

@@ -32,7 +32,6 @@ export default function NewTrip() {
       }
       
       const response = await api.post('/plans', apiData);
-      console.log(response);
       navigate('/trip-plan', { state: { ...response.data } });
     } catch (error) {
       if (error.name === 'ZodError') {
