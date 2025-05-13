@@ -42,26 +42,26 @@ export default function TripPlan() {
 
   // 出発日と帰着日の差(ミリ秒)を計算
   const calculateDiffTime = useMemo(() => {
-    if(stateDate?.startDay && stateDate?.finishDay) {
+    if(stateDate?.startDay && stateDate?.endDay) {
       const startDay = new Date(stateDate.startDay);
-      const finishDay = new Date(stateDate.finishDay);
-      const diffTime = finishDay - startDay;
+      const endDay = new Date(stateDate.endDay);
+      const diffTime = endDay - startDay;
 
       return diffTime;
     }
-  }, [stateDate?.startDay, stateDate?.finishDay]);
+  }, [stateDate?.startDay, stateDate?.endDay]);
 
   // 旅行日数を計算
   const totalDays = useMemo(() => {
     let countDay = 1;
-    if(stateDate?.startDay && stateDate?.finishDay) {
+    if(stateDate?.startDay && stateDate?.endDay) {
       const diffTime = calculateDiffTime;
       if(diffTime >= 0) {
         countDay = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
       }
     }
     return countDay;
-  }, [stateDate?.startDay, stateDate?.finishDay, calculateDiffTime]);
+  }, [stateDate?.startDay, stateDate?.endDay, calculateDiffTime]);
 
   // プランデータを日付とリンク(初期設定)
   const initialPlanContents = useMemo(() => {
@@ -143,8 +143,8 @@ export default function TripPlan() {
       const next = {...prev, [name]: value};
 
       // 帰着日が出発日よりも早い場合
-      if (next.startDay && next.finishDay) {
-        if (next.startDay > next.finishDay) {
+      if (next.startDay && next.endDay) {
+        if (next.startDay > next.endDay) {
           alert('帰着日が出発日よりも早いです。');
           return prev;
         }
@@ -197,8 +197,8 @@ export default function TripPlan() {
                 </span>
               <span> ~ </span>
               <span>
-                <label htmlFor="finishDay">
-                  <input type="date" id="finishDay" name="finishDay" value={stateDate?.finishDay} onChange={handleSetDate} />
+                <label htmlFor="endDay">
+                  <input type="date" id="endDay" name="endDay" value={stateDate?.endDay} onChange={handleSetDate} />
                 </label>
               </span>
             </div>
