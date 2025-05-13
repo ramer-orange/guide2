@@ -1,3 +1,4 @@
+import { api } from "../api/api";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom"
 
@@ -9,6 +10,18 @@ export default function TripPlan() {
   // 何日目のプランなのかを管理
   const [selectedDay, setSelectedDay] = useState(1);
   const [stateDate, setStateDate] = useState(state);
+  const [error, setError] = useState('');
+
+  // API側にデータを送信
+  const handleTripPlanUpdate = async (next) => {
+    try {
+      const response = await api.put(`/plans/${state.id}`, next);
+      console.log(response);
+    } catch (error) {
+      setError(error.response.data.message);
+      console.error('プランの更新に失敗しました。', error);
+    }
+  }
 
   // 最初に挿入するためのプランデータ
   const initialPlanData = {time: '', content: ''};
@@ -137,7 +150,9 @@ export default function TripPlan() {
         }
       }
 
-      // 正常な場合は入力値を返す
+      // API側にデータを送信
+      handleTripPlanUpdate(next);
+
       return next;
     });
   }
@@ -162,8 +177,19 @@ export default function TripPlan() {
             <button>管理画面へ戻る</button>
           </Link>
           <div>
-            <h3>{state?.tripName}</h3>
+            {/* <h3>
+              <label htmlFor="tripName">旅行タイトル</label>
+              <input
+                type="text"
+                id="tripName"
+                name="tripName"
+                value={state?.tripName || ''}
+                placeholder="旅行タイトル"
+                onChange={handleTripPlanUpdate}/>
+                {state?.tripName}
+              </h3> */}
             <div>
+              <p>{error}</p>
               <span>
                 <label htmlFor="startDay">
                   <input type="date" id="startDay" name="startDay" value={stateDate?.startDay} onChange={handleSetDate} />

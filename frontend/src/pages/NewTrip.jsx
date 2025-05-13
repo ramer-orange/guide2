@@ -23,12 +23,7 @@ export default function NewTrip() {
     const startDate = new Date(tripData.startDay);
     const endDate = new Date(tripData.finishDay);
 
-    // バリデーションエラー
-    if (!tripData.tripName) {
-      setError('旅行名は必須項目です。');
-      return;
-    }
-    else if (startDate > endDate) {
+    if (startDate > endDate) {
       setError('出発日は帰着日より前の日付を入力してください。');
       return;
     }
