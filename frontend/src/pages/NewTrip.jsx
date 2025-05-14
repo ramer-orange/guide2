@@ -1,21 +1,46 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { api } from "../api/api";
 
 // 旅行名と日付を入力するページ
 
 export default function NewTrip() {
   const [tripData, setTripData] = useState({});
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleTrip = (e) => {
     setTripData({
       ...tripData,
       [e.target.name]: e.target.value,
     });
+    // エラーメッセージをクリア
+    setError('');
   };
 
-  const handleCreate = () => {
-    navigate('/trip-plan', { state: { ...tripData } });
+  // API通信
+  const handleCreate = async () => {
+    const startDate = new Date(tripData.startDay);
+    const endDate = new Date(tripData.finishDay);
+
+    if (startDate > endDate) {
+      setError('出発日は帰着日より前の日付を入力してください。');
+      return;
+    }
+
+    try {
+      const apiData = {
+        title: tripData.tripName,
+        start_date: tripData.startDay,
+        end_date: tripData.finishDay,
+      }
+      const response = await api.post('/plans', apiData);
+
+      navigate('/trip-plan', { state: { ...response.data } });
+    } catch (error) {
+      console.error('旅行プランの作成に失敗しました。', error);
+      setError('旅行プランの作成に失敗しました。');
+    }
   };
 
   return (
@@ -25,6 +50,7 @@ export default function NewTrip() {
           <button>管理画面へ戻る</button>
       </Link>
       <div>
+        <p>{error}</p>
         <div>
           <label htmlFor="tripName">旅行タイトル</label>
           <input
@@ -59,7 +85,9 @@ export default function NewTrip() {
           />
         </div>
       </div>
-      <button type="button" onClick={handleCreate}>作成</button>
+      <button type="button" onClick={handleCreate}>
+        作成
+      </button>
     </div>
   );
 }
