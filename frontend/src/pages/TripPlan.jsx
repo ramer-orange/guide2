@@ -7,7 +7,6 @@ import { schemas } from "../validation";
 
 export default function TripPlan() {
   const { planId } = useParams(); // URLパラメータからplanIdを取得
-  // const [tripData, setTripData] = useState(null); // DBから取得したプランデータ
   const [selectedDay, setSelectedDay] = useState(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -49,7 +48,6 @@ export default function TripPlan() {
   const handleInputChange = e => {
     const { name, value } = e.target;
     setInputData(prev => ({ ...prev, [name]: value }));
-    console.log('inputData', inputData);
     isInputChanged.current = true;
   };
 
@@ -220,11 +218,6 @@ export default function TripPlan() {
   if (loading) {
     return <div>データを読み込み中...</div>;
   }
-
-  // // プランデータが取得できない場合
-  // if (!tripData) {
-  //   return <div>プランデータが見つかりません。</div>;
-  // }
 
   // 現在選択されている日のプランの内容を取得
   const currentDayPlan = planContents[selectedDay];
