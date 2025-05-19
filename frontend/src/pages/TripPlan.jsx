@@ -1,5 +1,5 @@
 import { api } from "../api/api";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom"
 import { schemas } from "../validation";
 
@@ -7,10 +7,18 @@ import { schemas } from "../validation";
 
 export default function TripPlan() {
   const { planId } = useParams(); // URLパラメータからplanIdを取得
-  const [tripData, setTripData] = useState(null); // DBから取得したプランデータ
+  // const [tripData, setTripData] = useState(null); // DBから取得したプランデータ
   const [selectedDay, setSelectedDay] = useState(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [inputData, setInputData]   = useState({
+    tripTitle: '',
+    startDate: null,
+    endDate:   null,
+  });
+
+  // 入力データが変更されたかどうかを管理
+  const isInputChanged = useRef(false);
 
   // DBからプランデータを取得
   useEffect(() => {
@@ -18,7 +26,11 @@ export default function TripPlan() {
       try {
         setLoading(true);
         const response = await api.get(`/plans/${planId}`);
-        setTripData(response.data);
+        setInputData({
+          tripTitle: response.data.title || '',
+          startDate: response.data.start_date || null,
+          endDate: response.data.end_date || null,
+        });
         setError('');
       } catch (error) {
         console.error('プランデータの取得に失敗しました:', error);
@@ -33,15 +45,32 @@ export default function TripPlan() {
     }
   }, [planId]);
 
-  // API側にデータを送信
-  const handleTripPlanUpdate = async (e) => {
+  // 入力データが変更された時の処理
+  const handleInputChange = e => {
     const { name, value } = e.target;
-    
+    setInputData(prev => ({ ...prev, [name]: value }));
+    console.log('inputData', inputData);
+    isInputChanged.current = true;
+  };
+
+  // 遅延保存処理(デバウンス)
+  useEffect(() => {
+    if (!isInputChanged.current) return;
+
+    const timer = setTimeout(() => {
+      handleTripPlanUpdate(inputData);
+    }, 1000);
+    isInputChanged.current = false;
+    return () => clearTimeout(timer);
+  },[inputData]);
+
+  // API側にデータを送信
+  const handleTripPlanUpdate = async () => {
     try {
       const updatedData = {
-        titleName: name === 'tripName' ? value : tripData.title,
-        startDate: name === 'startDate' ? value : tripData.start_date,
-        endDate: name === 'endDate' ? value : tripData.end_date,
+        tripTitle: inputData.tripTitle,
+        startDate: inputData.startDate,
+        endDate: inputData.endDate,
       };
       const validatedData = schemas.tripSchema.parse(updatedData);
 
@@ -51,10 +80,8 @@ export default function TripPlan() {
         end_date: validatedData.endDate,
       }
 
-      const response = await api.put(`/plans/${planId}`, apiData);
+      await api.put(`/plans/${planId}`, apiData);
       
-      // 更新に成功した場合、ローカルのstateも更新
-      setTripData(response.data);
       setError('');
     } catch (error) {
       if (error.name === 'ZodError') {
@@ -67,7 +94,7 @@ export default function TripPlan() {
         setError('ネットワークエラーが発生しました。');
       }
     }
-  };
+  }
 
   // 最初に挿入するためのプランデータ
   const initialPlanData = {time: '', content: ''};
@@ -75,8 +102,8 @@ export default function TripPlan() {
   // 旅行開始日と日数(〇日目)から、該当日付の文字列 (/MM/DD形式) を計算して返す
   const calculateDay = (selectedDay) => {
     // 旅行開始日が選択されている時のみ
-    if (tripData?.start_date){
-      const startDate = new Date(tripData.start_date);
+    if (inputData?.startDate){
+      const startDate = new Date(inputData.startDate);
       startDate.setDate(startDate.getDate() + selectedDay - 1);
       const options = {
         month: 'numeric',
@@ -88,26 +115,26 @@ export default function TripPlan() {
 
   // 出発日と帰着日の差(ミリ秒)を計算
   const calculateDiffTime = useMemo(() => {
-    if(tripData?.start_date && tripData?.end_date) {
-      const startDate = new Date(tripData.start_date);
-      const endDate = new Date(tripData.end_date);
+    if(inputData?.startDate && inputData?.endDate) {
+      const startDate = new Date(inputData.startDate);
+      const endDate = new Date(inputData.endDate);
       const diffTime = endDate - startDate;
 
       return diffTime;
     }
-  }, [tripData?.start_date, tripData?.end_date]);
+  }, [inputData?.startDate, inputData?.endDate]);
 
   // 旅行日数を計算
   const totalDays = useMemo(() => {
     let countDay = 1;
-    if(tripData?.start_date && tripData?.end_date) {
+    if(inputData?.startDate && inputData?.endDate) {
       const diffTime = calculateDiffTime;
       if(diffTime >= 0) {
         countDay = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
       }
     }
     return countDay;
-  }, [tripData?.start_date, tripData?.end_date, calculateDiffTime]);
+  }, [inputData?.startDate, inputData?.endDate, calculateDiffTime]);
 
   // プランデータを日付とリンク(初期設定)
   const initialPlanContents = useMemo(() => {
@@ -194,10 +221,10 @@ export default function TripPlan() {
     return <div>データを読み込み中...</div>;
   }
 
-  // プランデータが取得できない場合
-  if (!tripData) {
-    return <div>プランデータが見つかりません。</div>;
-  }
+  // // プランデータが取得できない場合
+  // if (!tripData) {
+  //   return <div>プランデータが見つかりません。</div>;
+  // }
 
   // 現在選択されている日のプランの内容を取得
   const currentDayPlan = planContents[selectedDay];
@@ -218,9 +245,9 @@ export default function TripPlan() {
                 type="text"
                 id="tripTitle"
                 name="tripTitle"
-                value={tripData?.title || ''}
+                value={inputData.tripTitle}
                 placeholder="旅行タイトル"
-                onChange={handleTripPlanUpdate}
+                onChange={handleInputChange}
               />
             </h3>
             <div>
@@ -230,8 +257,8 @@ export default function TripPlan() {
                     type="date"
                     id="startDate"
                     name="startDate"
-                    value={tripData?.start_date || ''}
-                    onChange={handleTripPlanUpdate}
+                    value={inputData.startDate}
+                    onChange={handleInputChange}
                   />
                 </label>
               </span>
@@ -242,8 +269,8 @@ export default function TripPlan() {
                     type="date"
                     id="endDate"
                     name="endDate"
-                    value={tripData?.end_date || ''}
-                    onChange={handleTripPlanUpdate}
+                    value={inputData.endDate}
+                    onChange={handleInputChange}
                   />
                 </label>
               </span>
