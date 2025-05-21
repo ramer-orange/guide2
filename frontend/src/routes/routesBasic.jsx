@@ -17,7 +17,7 @@ const routesBasic = createBrowserRouter(
             <Management />
           </ProtectedRoute>
         }/>
-        <Route path="/trip-plan" element={
+        <Route path="/trip-plan/:planId" element={
           <ProtectedRoute>
             <TripPlan />
           </ProtectedRoute>

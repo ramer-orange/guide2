@@ -26,13 +26,15 @@ export default function NewTrip() {
       const validatedData = schemas.tripSchema.parse(tripData);
       
       const apiData = {
-        title: validatedData.tripName,
-        start_date: validatedData.startDay,
-        end_date: validatedData.endDay,
+        title: validatedData.tripTitle,
+        start_date: validatedData.startDate,
+        end_date: validatedData.endDate,
       }
       
       const response = await api.post('/plans', apiData);
-      navigate('/trip-plan', { state: { ...response.data } });
+      
+      // プランIDのみを渡してTripPlanページに遷移
+      navigate(`/trip-plan/${response.data.id}`);
     } catch (error) {
       if (error.name === 'ZodError') {
         // Zodバリデーションエラーの場合
@@ -58,34 +60,34 @@ export default function NewTrip() {
       <div>
         <p>{error}</p>
         <div>
-          <label htmlFor="tripName">旅行タイトル</label>
+          <label htmlFor="tripTitle">旅行タイトル</label>
           <input
             type="text"
-            id="tripName"
-            name="tripName"
-            value={tripData.tripName || ''}
+            id="tripTitle"
+            name="tripTitle"
+            value={tripData.tripTitle || ''}
             placeholder="旅行タイトル"
             onChange={handleTrip}
           />
         </div>
         <div>
-          <label htmlFor="startDay">出発日</label>
+          <label htmlFor="startDate">出発日</label>
           <input
             type="date"
-            id="startDay"
-            name="startDay"
-            value={tripData.startDay || ''}
+            id="startDate"
+            name="startDate"
+            value={tripData.startDate || ''}
             placeholder="出発日"
             onChange={handleTrip}
           />
         </div>
         <div>
-          <label htmlFor="endDay">帰着日</label>
+          <label htmlFor="endDate">帰着日</label>
           <input
             type="date"
-            id="endDay"
-            name="endDay"
-            value={tripData.endDay || ''}
+            id="endDate"
+            name="endDate"
+            value={tripData.endDate || ''}
             placeholder="帰着日"
             onChange={handleTrip}
           />

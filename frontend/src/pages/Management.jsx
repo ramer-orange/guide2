@@ -48,6 +48,9 @@ export default function Management() {
                   <p>{plan.title}</p>
                   <p>{plan.start_date}</p>
                   <p>{plan.end_date}</p>
+                  <Link to={`/trip-plan/${plan.id}`}>
+                    <button>編集</button>
+                  </Link>
                 </div>
               )
             })
