@@ -167,7 +167,7 @@ export default function TripPlan() {
       // 日数は増えた時
       for (let day = 1; day <= totalDays; day++) {
         if(!(day in next)) {
-          next[day] = {time: '', content: ''}
+          next[day] = [{time: '', content: ''}]
         }
       }
 
