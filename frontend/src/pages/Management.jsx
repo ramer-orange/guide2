@@ -35,6 +35,24 @@ export default function Management() {
     fetchPlans();
   }, []);
 
+  // プランの削除
+  const handleDeleteClick = (planId) => {
+    if (window.confirm('本当に削除しますか？')) {
+      handlePlanDelete(planId);
+    }
+  }
+  const handlePlanDelete = async (planId) => {
+    try {
+      await api.delete(`/plans/${planId}`);
+      setPlans(plans.filter(plan => plan.id !== planId));
+      alert('プランを削除しました。');
+    }
+    catch (error) {
+      console.error('プランの削除に失敗しました。', error);
+      alert('プランの削除に失敗しました。');
+    }
+  }
+
   return (
     <>
       <div>
@@ -51,6 +69,7 @@ export default function Management() {
                   <Link to={`/trip-plan/${plan.id}`}>
                     <button>編集</button>
                   </Link>
+                  <button onClick={() => handleDeleteClick(plan.id)}>削除</button>
                 </div>
               )
             })
