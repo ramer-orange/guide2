@@ -27,9 +27,8 @@ class Plan extends Model
         return $this->belongsTo(User::class);
     }
 
-    // プラン日のリレーション
-    public function planDays()
+    public function planDetails()
     {
-        return $this->hasMany(PlanDay::class);
+        return $this->hasMany(PlanDetail::class);
     }
 }

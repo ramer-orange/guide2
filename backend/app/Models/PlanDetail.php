@@ -11,6 +11,8 @@ class PlanDetail extends Model
     use HasFactory;
 
     protected $fillable = [
+        'plan_id',
+        'day_number',
         'type',
         'title',
         'memo',
@@ -18,8 +20,8 @@ class PlanDetail extends Model
         'order',
     ];
 
-    public function planDay()
+    public function plan()
     {
-        return $this->belongsTo(PlanDay::class);
+        return $this->belongsTo(Plan::class);
     }
 }

@@ -22,7 +22,8 @@ class PlanDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'plan_day_id' => 'required|integer|exists:plan_days,id',
+            'plan_id' => 'required|integer|exists:plans,id',
+            'day_number' => 'required|integer',
             'type' => 'nullable|integer',
             'title' => 'nullable|string|max:255',
             'memo' => 'nullable|string',

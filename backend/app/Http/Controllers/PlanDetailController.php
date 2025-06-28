@@ -15,11 +15,12 @@ class PlanDetailController extends Controller
         return response()->json($planDetails, 200);
     }
 
-    public function store(PlanDetailRequest $request, $planDayId)
+    public function store(PlanDetailRequest $request)
     {
         $planDetails = new PlanDetail();
 
-        $planDetails->plan_day_id = $planDayId;
+        $planDetails->plan_id = $request->input('day_number');
+        $planDetails->day_number = $request->input('day_number');
         $planDetails->type = $request->input('type');
         $planDetails->title = $request->input('title');
         $planDetails->memo = $request->input('memo');
@@ -35,6 +36,7 @@ class PlanDetailController extends Controller
     {
         $planDetails = PlanDetail::findOrFail($planDetailId);
 
+        $planDetails->day_number = $request->input('day_number', $planDetails->day_number);
         $planDetails->type = $request->input('type', $planDetails->type);
         $planDetails->title = $request->input('title', $planDetails->title);
         $planDetails->memo = $request->input('memo', $planDetails->memo);
