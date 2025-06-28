@@ -2,6 +2,7 @@ import { api } from "../api/api";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom"
 import { schemas } from "../validation";
+import { v4 as uuid } from "uuid";
 
 // 旅行プラン作成ページ
 
@@ -17,85 +18,18 @@ export default function TripPlan() {
   });
 
   // 入力データが変更されたかどうかを管理
-  const isInputChanged = useRef(false);
+  const isTripChanged = useRef(false);
+  const isPlanDetailChanged = useRef(false);
 
-  // DBからプランデータを取得
-  useEffect(() => {
-    const fetchPlanData = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get(`/plans/${planId}`);
-        setInputData({
-          tripTitle: response.data.title || '',
-          startDate: response.data.start_date || null,
-          endDate: response.data.end_date || null,
-        });
-        setError('');
-      } catch (error) {
-        console.error('プランデータの取得に失敗しました:', error);
-        setError('プランデータの取得に失敗しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (planId) {
-      fetchPlanData();
-    }
-  }, [planId]);
-
-  // 入力データが変更された時の処理
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setInputData(prev => ({ ...prev, [name]: value }));
-    isInputChanged.current = true;
-  };
-
-  // 遅延保存処理(デバウンス)
-  useEffect(() => {
-    if (!isInputChanged.current) return;
-
-    const timer = setTimeout(() => {
-      handleTripPlanUpdate(inputData);
-    }, 1000);
-    isInputChanged.current = false;
-    return () => clearTimeout(timer);
-  },[inputData]);
-
-  // API側にデータを送信
-  const handleTripPlanUpdate = async () => {
-    try {
-      const updatedData = {
-        tripTitle: inputData.tripTitle,
-        startDate: inputData.startDate,
-        endDate: inputData.endDate,
-      };
-      const validatedData = schemas.tripSchema.parse(updatedData);
-
-      const apiData = {
-        title: validatedData.tripTitle,
-        start_date: validatedData.startDate,
-        end_date: validatedData.endDate,
-      }
-
-      await api.put(`/plans/${planId}`, apiData);
-      
-      setError('');
-    } catch (error) {
-      if (error.name === 'ZodError') {
-        const allErrors = error.errors.map(error => error.message).join('\n');
-        setError(allErrors);
-      } else if (error.response) {
-        setError(error.response.data.message || 'プランの更新に失敗しました。');
-        console.error('プランの更新に失敗しました。', error);
-      } else {
-        setError('ネットワークエラーが発生しました。');
-      }
-    }
-  }
-
-  // 最初に挿入するためのプランデータ
-  const initialPlanData = {time: '', content: ''};
+  // プラン詳細の初期挿入データを生成
+  const createInitialPlanData = () => ({
+    id: uuid(),
+    type: null,
+    title: '',
+    memo: '',
+    arrival_time: null,
+    order: null,
+  });
 
   // 旅行開始日と日数(〇日目)から、該当日付の文字列 (/MM/DD形式) を計算して返す
   const calculateDay = (selectedDay) => {
@@ -138,13 +72,38 @@ export default function TripPlan() {
   const initialPlanContents = useMemo(() => {
     const contents = {};
     for (let day = 1; day <= totalDays; day++){
-      contents[day] = [initialPlanData]
+      contents[day] = [createInitialPlanData()]
     }
     return contents;
   }, [totalDays]);
 
   // プラン内容を管理
   const [planContents, setPlanContents] = useState(initialPlanContents);
+
+  // DBからプランデータを取得
+  useEffect(() => {
+    const fetchPlanData = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/plans/${planId}`);
+        setInputData({
+          tripTitle: response.data.title || '',
+          startDate: response.data.start_date || null,
+          endDate: response.data.end_date || null,
+        });
+        setError('');
+      } catch (error) {
+        console.error('プランデータの取得に失敗しました:', error);
+        setError('プランデータの取得に失敗しました。');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (planId) {
+      fetchPlanData();
+    }
+  }, [planId]);
 
   // 追加ボタンが押された時の処理(選択された日のみに初期データを挿入)
   const handleAddPlan = () => {
@@ -153,7 +112,7 @@ export default function TripPlan() {
         ...prev,
         [selectedDay]: [
           ...prev[selectedDay],
-          initialPlanData
+          createInitialPlanData()
         ]
       })
     )
@@ -164,10 +123,10 @@ export default function TripPlan() {
     setPlanContents(prev => {
       const next = {...prev};
 
-      // 日数は増えた時
+      // 日数が増えた時
       for (let day = 1; day <= totalDays; day++) {
         if(!(day in next)) {
-          next[day] = [{time: '', content: ''}]
+          next[day] = [createInitialPlanData()]
         }
       }
 
@@ -194,17 +153,119 @@ export default function TripPlan() {
     setSelectedDay(index + 1);
   }
 
+  // 変更されたプラン詳細の内容を追跡
+  const changedPlanDetail = useRef(new Map());
+
+  // 旅行概要が変更された時の処理
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setInputData(prev => ({ ...prev, [name]: value }));
+    isTripChanged.current = true;
+  };
+
   // 選択中の日のプラン内容（時間または内容）を変更するハンドラ
   const handlePlanChange = (index, e) => {
     const { name, value } = e.target;
     setPlanContents(prev => ({
       ...prev,
-      // 変更箇所を特定し、変更
-      [selectedDay]: prev[selectedDay].map((plan, i) =>
-      i === index ? {...plan, [name]: value} : plan
-      )
+      [selectedDay]: prev[selectedDay].map((plan, i) => {
+        if (i === index) {
+          const updatePlan = {...plan, [name]: value};
+          // 変更されたプランアイテムのIDを追跡
+          changedPlanDetail.current.set(plan.id, {
+            plan_id: Number(planId),
+            day_number: selectedDay,
+            type: updatePlan.type,
+            title: updatePlan.title,
+            memo: updatePlan.memo,
+            arrival_time: updatePlan.arrival_time,
+            order: i + 1,
+          });
+          return updatePlan;
+        }
+        return plan;
+      })
     }));
+    isPlanDetailChanged.current = true;
   };
+
+  // 遅延保存処理(旅行概要)
+  useEffect(() => {
+    if (!isTripChanged.current) return;
+
+    const timer = setTimeout(() => {
+      handleTripPlanUpdate();
+      isTripChanged.current = false;
+    }, 1000);
+    return () => clearTimeout(timer);
+  },[inputData]);
+
+  // 遅延保存処理(プラン詳細)
+  useEffect(() => {
+    if (!isPlanDetailChanged.current) return;
+
+    const timer = setTimeout(() => {
+      handlePlanDetailUpdate();
+      isPlanDetailChanged.current = false;
+    }, 1000);
+    return () => clearTimeout(timer);
+  },[planContents]);
+
+  // API側にデータを送信
+  // 旅行概要の更新
+  const handleTripPlanUpdate = async () => {
+    try {
+      // 旅行概要
+      const updatedData = {
+        title: inputData.tripTitle,
+        start_date: inputData.startDate,
+        end_date: inputData.endDate,
+      };
+      console.log('updatedData', updatedData);
+      const validatedData = schemas.tripSchema.parse(updatedData);
+      await api.put(`/plans/${planId}`, validatedData);
+
+      setError('');
+    } catch (error) {
+      if (error.name === 'ZodError') {
+        const allErrors = error.errors.map(error => error.message).join('\n');
+        setError(allErrors);
+      } else if (error.response) {
+        setError(error.response.data.message || 'プランの更新に失敗しました。');
+        console.error('プランの更新に失敗しました。', error);
+      } else {
+        setError('ネットワークエラーが発生しました。');
+      }
+    }
+  }
+  // プラン詳細の更新
+  const handlePlanDetailUpdate = async () => {
+    try {
+      // const currentPlans = planContents[selectedDay];
+      const changedItem = Array.from(changedPlanDetail.current.values());
+
+      if (changedItem.length === 0) {
+        return;
+      }
+      changedPlanDetail.current.clear();
+      console.log('payload', changedItem);
+
+      const validatedData = schemas.planDetailSchema.parse(changedItem[0]);
+      await api.post(`/plans/details/`, validatedData);
+
+      setError('');
+    } catch (error) {
+      if (error.name === 'ZodError') {
+        const allErrors = error.errors.map(error => error.message).join('\n');
+        setError(allErrors);
+      } else if (error.response) {
+        setError(error.response.data.message || 'プランの更新に失敗しました。');
+        console.error('プランの更新に失敗しました。', error);
+      } else {
+        setError('ネットワークエラーが発生しました。');
+      }
+    }
+  }
 
   // プランデータの削除
   const handlePlanDelete = (index) => {
@@ -284,11 +345,11 @@ export default function TripPlan() {
                 {currentDayPlan.map((plan, index) => {
                   return (
                     <div key={index}>
-                      <label htmlFor="time">
-                        <input type="time" id="time" name="time" value={plan.time} onChange={e => handlePlanChange(index, e)}/>
+                      <label htmlFor="arrival_time">
+                        <input type="time" id="arrival_time" name="arrival_time" value={plan.arrival_time} onChange={e => handlePlanChange(index, e)}/>
                       </label>
-                      <label htmlFor="content">
-                        <textarea name="content" id="content" value={plan.content} onChange={e => handlePlanChange(index, e)}></textarea>
+                      <label htmlFor="memo">
+                        <textarea name="memo" id="memo" value={plan.memo} onChange={e => handlePlanChange(index, e)}></textarea>
                       </label>
                       <button onClick={() => (handlePlanDelete(index))}>削除</button>
                   </div>
