@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
             $table->integer('day_number')->comment('何日目か');
+            $table->string('title')->nullable()->comment('タイトル');
             $table->integer('type')->nullable()->comment('プランタイプ: メモ、スポット、移動等');
             $table->text('memo')->nullable()->comment('メモ');
             $table->time('arrival_time')->nullable()->comment('到着時間');
