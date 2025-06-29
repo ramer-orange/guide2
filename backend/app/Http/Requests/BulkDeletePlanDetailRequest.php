@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlanDayRequest extends FormRequest
+class BulkDeletePlanDetailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class PlanDayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'plan_id' => 'required|exists:plans,id',
-            'day_number' => 'required|integer|min:1',
-            'date' => 'date',
+            'delete_days' => 'required|array|min:1',
+            'delete_days.*' => 'integer|min:1',
         ];
     }
 }

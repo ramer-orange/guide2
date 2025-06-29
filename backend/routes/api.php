@@ -5,7 +5,6 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PlanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PlanDayController;
 use App\Http\Controllers\PlanDetailController;
 
 // 認証が必要なAPIルート
@@ -15,8 +14,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [LoginController::class, 'logout']);
     Route::apiResource('plans', PlanController::class);
-    Route::apiResource('plans.days', PlanDayController::class);
-    Route::apiResource('plans.days.details', PlanDetailController::class);
+
+    // プランの詳細関連
+    Route::get('/plans-details/{planId}', [PlanDetailController::class, 'index']);
+    Route::post('/plans-details/{planId}', [PlanDetailController::class, 'store']);
+    Route::post('/plan-details', [PlanDetailController::class, 'store']);
+    Route::put('/plan-details/{planDetailId}', [PlanDetailController::class, 'update']);
+    Route::delete('/plan-details/{planDetailId}', [PlanDetailController::class, 'destroy']);
+    Route::delete('/plan-details/{planId}/bulk-delete-days', [PlanDetailController::class, 'bulkDestroy']);
 });
 
 // 認証が不要なAPIルート

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('plan_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('plan_day_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
+            $table->integer('day_number')->comment('何日目か');
+            $table->string('title')->nullable()->comment('タイトル');
             $table->integer('type')->nullable()->comment('プランタイプ: メモ、スポット、移動等');
-            $table->string('title')->nullable()->comment('プラン名');
             $table->text('memo')->nullable()->comment('メモ');
             $table->time('arrival_time')->nullable()->comment('到着時間');
             $table->integer('order')->nullable()->comment('表示順');
