@@ -1,5 +1,5 @@
-import { api } from "./api";
-import { schemas } from "../validation";
+import { api } from "@/api/api";
+import { schemas } from "@/validation";
 
 const fetchPlanOverviewData = async (planId) => {
   const tripPlan = await api.get(`/plans/${planId}`);

@@ -226,14 +226,26 @@ export const usePlanDetails = (planId, totalDays) => {
 
       setError('');
       console.debug('プランの一括削除に成功しました:', deleteDays);
+      return { success: true };
     } catch (error) {
       setError('プランの削除に失敗しました。');
       console.error('プランの削除に失敗しました。', error);
+      return { success: false };
     }
   }
 
   // 現在選択されている日のプランの内容を取得
-  const currentDayPlan = planContents[selectedDay] || [createInitialPlanData()];
+  useEffect(() => {
+    // 選択された日にプランがない場合、stateに初期データを挿入
+    if (!planContents[selectedDay]) {
+      setPlanContents(prev => ({
+        ...prev,
+        [selectedDay]: [createInitialPlanData()]
+      }));
+    }
+  }, [selectedDay, planContents]);
+  const currentDayPlan = planContents[selectedDay];
+  console.debug('現在選択されている日のプラン:', currentDayPlan);
 
   return {
     selectedDay,
