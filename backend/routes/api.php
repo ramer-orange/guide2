@@ -16,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('plans', PlanController::class);
 
     // プランの詳細関連
-    Route::apiResource('plan.details', PlanDetailController::class)
+    Route::apiResource('plans.details', PlanDetailController::class)
         ->scoped()
         ->only(['index', 'store', 'update', 'destroy']);
     Route::delete('/plans/{planId}/details/bulk', [PlanDetailController::class, 'bulkDestroy'])
