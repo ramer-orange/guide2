@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from "../api/api";
-import { schemas } from "../validation";
+import { api } from "@/api/api";
+import { schemas } from "@/validation";
 
 // 旅行名と日付を入力するページ
 

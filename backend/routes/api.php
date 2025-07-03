@@ -16,8 +16,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('plans', PlanController::class);
 
     // プランの詳細関連
-    Route::get('/plans-details/{planId}', [PlanDetailController::class, 'index']);
-    Route::post('/plans-details/{planId}', [PlanDetailController::class, 'store']);
+    Route::get('/plan-details/{planId}', [PlanDetailController::class, 'index']);
+    Route::post('/plan-details/{planId}', [PlanDetailController::class, 'store']);
     Route::post('/plan-details', [PlanDetailController::class, 'store']);
     Route::put('/plan-details/{planDetailId}', [PlanDetailController::class, 'update']);
     Route::delete('/plan-details/{planDetailId}', [PlanDetailController::class, 'destroy']);
