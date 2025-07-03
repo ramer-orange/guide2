@@ -5,7 +5,7 @@ export const tripSchema = z.object({
   start_date: z.string().date('有効な日付を入力してください。').nullish(),
   end_date: z.string().date('有効な日付を入力してください。').nullish(),
 }).refine((data) => {
-  if (data.start_date >= data.end_date) {
+  if (data.start_date > data.end_date) {
     return false;
   }
   return true;
