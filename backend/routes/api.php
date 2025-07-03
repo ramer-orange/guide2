@@ -16,12 +16,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('plans', PlanController::class);
 
     // プランの詳細関連
-    Route::get('/plan-details/{planId}', [PlanDetailController::class, 'index']);
-    Route::post('/plan-details/{planId}', [PlanDetailController::class, 'store']);
-    Route::post('/plan-details', [PlanDetailController::class, 'store']);
-    Route::put('/plan-details/{planDetailId}', [PlanDetailController::class, 'update']);
-    Route::delete('/plan-details/{planDetailId}', [PlanDetailController::class, 'destroy']);
-    Route::delete('/plan-details/{planId}/bulk-delete-days', [PlanDetailController::class, 'bulkDestroy']);
+    Route::apiResource('plan.details', PlanDetailController::class)
+        ->scoped()
+        ->only(['index', 'store', 'update', 'destroy']);
+    Route::delete('/plans/{planId}/details/bulk', [PlanDetailController::class, 'bulkDestroy'])
+        ->name('plans.details.bulk-destroy');
 });
 
 // 認証が不要なAPIルート
