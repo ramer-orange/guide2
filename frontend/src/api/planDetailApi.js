@@ -3,7 +3,7 @@ import { schemas } from "@/validation";
 
 // DBからプランデータを取得
 const fetchPlanDetailData = async (planId) => {
-  const planDetail = await api.get(`plans-details/${planId}/`);
+  const planDetail = await api.get(`plan-details/${planId}/`);
   return planDetail;
 };
 
