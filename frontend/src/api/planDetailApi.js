@@ -21,7 +21,6 @@ const planDetailUpdate = async (payload, planId, planDetailId) => {
 
 // プラン詳細データの削除
 const planDelete = async (planId, planDetailId) => {
-  console.log('planDelete', planId, planDetailId);
   await api.delete(`/plans/${planId}/details/${planDetailId}`);
 }
 

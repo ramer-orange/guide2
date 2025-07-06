@@ -206,7 +206,6 @@ export const usePlanDetails = (planId, totalDays) => {
       }
 
       const planDetailId = deletePlanDetailItem.id;
-      console.log('planDetailId', planDetailId);
       await planDelete(planId, planDetailId);
       setPlanContents(prev => ({
         ...prev,
