@@ -27,7 +27,10 @@ class Plan extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function planDetails()
+    /**
+     * 旅行プランの詳細
+     */
+    public function details()
     {
         return $this->hasMany(PlanDetail::class);
     }

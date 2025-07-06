@@ -3,25 +3,25 @@ import { schemas } from "@/validation";
 
 // DBからプランデータを取得
 const fetchPlanDetailData = async (planId) => {
-  const planDetail = await api.get(`plan-details/${planId}/`);
+  const planDetail = await api.get(`plans/${planId}/details`);
   return planDetail;
 };
 
 // プラン詳細の更新
-const planDetailUpdate = async (payload, planDetailId) => {
+const planDetailUpdate = async (payload, planId, planDetailId) => {
   const validatedData = schemas.planDetailSchema.parse(payload);
   // 新規作成か更新かを判定
   const isNew = typeof planDetailId !== 'number'; // uuidならstring
   if (isNew) {
-    await api.post(`/plan-details/`, validatedData);
+    await api.post(`/plans/${planId}/details/`, validatedData);
   } else {
-    await api.put(`/plan-details/${planDetailId}`, validatedData);
+    await api.put(`/plans/${planId}/details/${planDetailId}`, validatedData);
   }
 }
 
 // プラン詳細データの削除
-const planDelete = async (planDetailId) => {
-  await api.delete(`/plan-details/${planDetailId}`);
+const planDelete = async (planId, planDetailId) => {
+  await api.delete(`/plans/${planId}/details/${planDetailId}`);
 }
 
 // 日数削除時、一括でプラン詳細の削除
@@ -29,7 +29,7 @@ const bulkPlanDeleteByDays = async (deleteDays, planId) => {
   if (!deleteDays || deleteDays.length === 0) {
     return;
   }
-  await api.delete(`/plan-details/${planId}/bulk-delete-days`, {
+  await api.delete(`/plans/${planId}/details/bulk`, {
     data: {
       delete_days: deleteDays
     }
