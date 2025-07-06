@@ -174,7 +174,7 @@ export const usePlanDetails = (planId, totalDays) => {
     try {
       changedPlanDetail.current.clear();
 
-      await planDetailUpdate(payload, planDetailId);
+      await planDetailUpdate(payload, planId, planDetailId);
 
       setError('');
       console.debug('プランの更新に成功しました:', payload);
@@ -206,7 +206,8 @@ export const usePlanDetails = (planId, totalDays) => {
       }
 
       const planDetailId = deletePlanDetailItem.id;
-      await planDelete(planDetailId);
+      console.log('planDetailId', planDetailId);
+      await planDelete(planId, planDetailId);
       setPlanContents(prev => ({
         ...prev,
         [selectedDay]: prev[selectedDay].filter((_, i) => i !== index)
