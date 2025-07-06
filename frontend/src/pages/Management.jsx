@@ -2,6 +2,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react";
 import { api } from "@/api/api";
+import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
 // 管理画面ページ
 
@@ -48,8 +49,8 @@ export default function Management() {
       alert('プランを削除しました。');
     }
     catch (error) {
-      console.error('プランの削除に失敗しました。', error);
-      alert('プランの削除に失敗しました。');
+      const { message } = parseError(error, ERROR_MESSAGES.PLAN_DELETE_FAILED);
+      alert(message);
     }
   }
 
