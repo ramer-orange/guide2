@@ -244,7 +244,7 @@ export const usePlanDetails = (planId, totalDays) => {
       }));
     }
   }, [selectedDay, planContents]);
-  const currentDayPlan = planContents[selectedDay];
+  const currentDayPlan = planContents[selectedDay] || [];
   console.debug('現在選択されている日のプラン:', currentDayPlan);
 
   return {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { fetchPlanOverviewData, tripPlanOverviewUpdate } from "@/api/planOverviewApi";
+import { fetchPlanOverviewData, planOverviewUpdate } from "@/api/planOverviewApi";
+import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
 export const usePlanOverview = (planId) => {
   const [error, setError] = useState('');
@@ -93,7 +94,7 @@ export const usePlanOverview = (planId) => {
     if (!isTripChanged.current) return;
 
     const timer = setTimeout(() => {
-      handleTripPlanUpdate();
+      handlePlanOverviewUpdate();
       isTripChanged.current = false;
     }, 250);
     return () => clearTimeout(timer);
@@ -102,28 +103,15 @@ export const usePlanOverview = (planId) => {
 
   // API側にデータを送信
   // 旅行概要の更新
-  const handleTripPlanUpdate = async () => {
+  const handlePlanOverviewUpdate = async () => {
     try {
-      // 旅行概要
-      const updatedData = {
-        title: tripData.tripTitle,
-        start_date: tripData.startDate,
-        end_date: tripData.endDate,
-      };
-      await tripPlanOverviewUpdate(updatedData, planId);
+      await planOverviewUpdate(tripData, planId);
 
       setError('');
-      console.debug('プランの更新に成功しました:', updatedData);
+      console.debug('プランの更新に成功しました:', tripData);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        const allErrors = error.errors.map(error => error.message).join('\n');
-        setError(allErrors);
-      } else if (error.response) {
-        setError('プランの更新に失敗しました。');
-        console.error('プランの更新に失敗しました。', error);
-      } else {
-        setError('ネットワークエラーが発生しました。');
-      }
+      const { message } = parseError(error, ERROR_MESSAGES.PLAN_UPDATE_FAILED);
+      setError(message);
     }
   }
 
@@ -138,6 +126,6 @@ export const usePlanOverview = (planId) => {
     calculateDiffTime,
     totalDays,
     handleInputChange,
-    handleTripPlanUpdate,
+    handlePlanOverviewUpdate,
   }
 }

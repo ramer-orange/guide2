@@ -1,5 +1,7 @@
+import * as z from "zod/v4"; 
+
 /**
- * エラーハンドリングユーティリティ
+ * エラーハンドリング共通部分
  */
 
 // エラーメッセージの定数定義
@@ -76,7 +78,15 @@ export const extractValidationErrors = (errorResponse) => {
  * @returns {object} { message: string, isUserError: boolean }
  */
 export const parseError = (error, operationMessage) => {
-  console.error('Error details:', error);
+  console.error('Error details: errors', error.issues);
+
+  // Zodバリデーションエラーの処理
+  if (error instanceof z.ZodError) {
+    return {
+      message: error.issues.map(e => e.message).join('\n'),
+      isUserError: true
+    };
+  }
 
   // ネットワークエラー（レスポンスが存在しない）
   if (!error.response) {

@@ -18,7 +18,8 @@ export default function Management() {
 
       navigate('/');
     } catch (error) {
-      console.error('ログアウトに失敗しました。', error)
+      const { message } = parseError(error, ERROR_MESSAGES.LOGOUT_FAILED);
+      alert(message);
     }
   }
 
