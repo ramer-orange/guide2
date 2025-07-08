@@ -13,6 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/logout', [LoginController::class, 'logout']);
+
+    // プラン概要　
     Route::apiResource('plans', PlanController::class);
 
     // プランの詳細関連

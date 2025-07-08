@@ -70,7 +70,7 @@ export default function TripPlan() {
             <span>{calculateDay(selectedDay)}</span>
             <div>
                 {/* プラン詳細 */}
-                {currentDayPlan.map((item, index) => {
+                {(currentDayPlan || []).map((item, index) => {
                   return (
                     <PlanDetailItem
                       key={index}

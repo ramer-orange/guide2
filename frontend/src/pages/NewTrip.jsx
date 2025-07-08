@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from "@/api/api";
-import { schemas } from "@/validation";
+import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
+import { planOverviewCreate } from "@/api/planOverviewApi";
 
 // 旅行名と日付を入力するページ
-
 export default function NewTrip() {
   const [tripData, setTripData] = useState({});
   const navigate = useNavigate();
@@ -21,33 +20,15 @@ export default function NewTrip() {
 
   // API通信
   const handleCreate = async () => {
-    // Zodバリデーション
     try {
-      const validatedData = schemas.tripSchema.parse(tripData);
+      const response = await planOverviewCreate(tripData);
       
-      const apiData = {
-        title: validatedData.tripTitle,
-        start_date: validatedData.startDate,
-        end_date: validatedData.endDate,
-      }
-      
-      const response = await api.post('/plans', apiData);
-      
+      setError('');
       // プランIDのみを渡してTripPlanページに遷移
       navigate(`/trip-plan/${response.data.id}`);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        // Zodバリデーションエラーの場合
-        const allErrors = error.errors.map(error => error.message).join('\n');
-        setError(allErrors);
-      } else if (error.response) {
-        // APIエラーの場合
-        setError(error.response.data.message || '旅行プランの作成に失敗しました。');
-      } else {
-        // その他のエラー
-        console.error('旅行プランの作成に失敗しました。', error);
-        setError('ネットワークエラーが発生しました。');
-      }
+      const { message } = parseError(error, ERROR_MESSAGES.PLAN_CREATE_FAILED);
+      setError(message);
     }
   };
 
