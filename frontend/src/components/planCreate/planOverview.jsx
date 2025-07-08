@@ -1,6 +1,6 @@
 import React from "react";
 
-function PlanOverview({ tripData, onPlanOverviewChange }) {
+export function PlanOverview({ tripData, onPlanOverviewChange }) {
   return(
     <>
       <h3>
@@ -42,5 +42,3 @@ function PlanOverview({ tripData, onPlanOverviewChange }) {
     </>
   );
 }
-
-export default PlanOverview;
