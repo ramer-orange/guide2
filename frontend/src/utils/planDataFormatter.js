@@ -2,9 +2,6 @@ import { schemas } from "@/validation";
 
 // 旅行概要をAPIに送信するためのフォーマットを行う関数
 export const formatPlanOverview = (tripData) => {
-  // undefinedが渡るのを防ぐ
-  tripData.tripTitle = tripData.tripTitle || '';
-
   const validatedData = schemas.tripSchema.parse(tripData);
   const formattedData = {
     title: validatedData.tripTitle,
