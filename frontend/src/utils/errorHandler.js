@@ -78,15 +78,16 @@ export const extractValidationErrors = (errorResponse) => {
  * @returns {object} { message: string, isUserError: boolean }
  */
 export const parseError = (error, operationMessage) => {
-  console.error('Error details: errors', error.issues);
-
   // Zodバリデーションエラーの処理
   if (error instanceof z.ZodError) {
+    console.error('Error details: errors', error.issues);
     return {
       message: error.issues.map(e => e.message).join('\n'),
       isUserError: true
     };
   }
+
+  console.error('Error details:', error);
 
   // ネットワークエラー（レスポンスが存在しない）
   if (!error.response) {
@@ -97,7 +98,6 @@ export const parseError = (error, operationMessage) => {
   }
 
   const status = error.response.status;
-  
   // バリデーションエラー（422）の処理
   if (status === 422) {
     return {
@@ -108,7 +108,6 @@ export const parseError = (error, operationMessage) => {
 
   // その他のHTTPエラー
   const message = operationMessage || getErrorMessageByStatus(status);
-  
   return {
     message,
     isUserError: status >= 400 && status < 500 // 4xxはユーザーエラー
