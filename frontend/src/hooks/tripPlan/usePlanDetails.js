@@ -1,6 +1,7 @@
 import { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays } from "@/api/planDetailApi";
 import { useState, useEffect, useRef } from "react";
 import { v4 as uuid } from "uuid";
+import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
 export const usePlanDetails = (planId, totalDays) => {
   const [selectedDay, setSelectedDay] = useState(1);
@@ -18,7 +19,7 @@ export const usePlanDetails = (planId, totalDays) => {
     type: null,
     title: '',
     memo: '',
-    arrival_time: null,
+    arrivalTime: null,
     order: null,
   });
 
@@ -36,11 +37,11 @@ export const usePlanDetails = (planId, totalDays) => {
           acc[item.day_number].push({
             ...item,
             id: item.id,
-            day_number: item.day_number,
+            dayNumber: item.day_number,
             type: item.type || null,
             title: item.title || '',
             memo: item.memo || '',
-            arrival_time: item.arrival_time || null,
+            arrivalTime: item.arrival_time || null,
             order: item.order || null,
           });
           return acc;
@@ -50,8 +51,8 @@ export const usePlanDetails = (planId, totalDays) => {
         setError('');
         console.debug('プランデータの取得に成功しました:', groupedByDays);
       } catch (error) {
-        console.error('プランデータの取得に失敗しました:', error);
-        setError('プランデータの取得に失敗しました。');
+        const { message } = parseError(error, ERROR_MESSAGES.PLAN_FETCH_FAILED);
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -136,12 +137,12 @@ export const usePlanDetails = (planId, totalDays) => {
           const updatePlan = {...plan, [name]: value};
           // 変更されたプランアイテムのIDを追跡
           changedPlanDetail.current.set(plan.id, {
-            plan_id: Number(planId),
-            day_number: selectedDay,
+            planId: Number(planId),
+            dayNumber: selectedDay,
             type: updatePlan.type,
             title: updatePlan.title,
             memo: updatePlan.memo,
-            arrival_time: updatePlan.arrival_time,
+            arrivalTime: updatePlan.arrivalTime,
             order: i + 1,
           });
           return updatePlan;
@@ -179,15 +180,8 @@ export const usePlanDetails = (planId, totalDays) => {
       setError('');
       console.debug('プランの更新に成功しました:', payload);
     } catch (error) {
-      if (error.name === 'ZodError') {
-        const allErrors = error.errors.map(error => error.message).join('\n');
-        setError(allErrors);
-      } else if (error.response) {
-        setError('プランの更新に失敗しました。');
-        console.error('プランの更新に失敗しました。', error);
-      } else {
-        setError('ネットワークエラーが発生しました。');
-      }
+      const { message } = parseError(error, ERROR_MESSAGES.PLAN_UPDATE_FAILED);
+      setError(message);
     }
   }
 
@@ -214,8 +208,8 @@ export const usePlanDetails = (planId, totalDays) => {
       setError('');
       console.debug('プランの削除に成功しました:', deletePlanDetailItem);
     } catch (error) {
-      setError('プランの削除に失敗しました。');
-      console.error('プランの削除に失敗しました。', error);
+      const { message } = parseError(error, ERROR_MESSAGES.PLAN_DELETE_FAILED);
+      setError(message);
     }
   }
 
@@ -228,8 +222,8 @@ export const usePlanDetails = (planId, totalDays) => {
       console.debug('プランの一括削除に成功しました:', deleteDays);
       return { success: true };
     } catch (error) {
-      setError('プランの削除に失敗しました。');
-      console.error('プランの削除に失敗しました。', error);
+      const { message } = parseError(error, ERROR_MESSAGES.PLAN_DELETE_FAILED);
+      setError(message);
       return { success: false };
     }
   }

@@ -1,21 +1,23 @@
 import { api } from "@/api/api";
-import { schemas } from "@/validation";
+import { formatPlanDetail } from "@/utils/planDataFormatter";
+
 
 // DBからプランデータを取得
 const fetchPlanDetailData = async (planId) => {
   const planDetail = await api.get(`plans/${planId}/details`);
+  
   return planDetail;
 };
 
 // プラン詳細の更新
 const planDetailUpdate = async (payload, planId, planDetailId) => {
-  const validatedData = schemas.planDetailSchema.parse(payload);
+  const formattedData = formatPlanDetail(payload);
   // 新規作成か更新かを判定
   const isNew = typeof planDetailId !== 'number'; // uuidならstring
   if (isNew) {
-    await api.post(`/plans/${planId}/details/`, validatedData);
+    await api.post(`/plans/${planId}/details/`, formattedData);
   } else {
-    await api.put(`/plans/${planId}/details/${planDetailId}`, validatedData);
+    await api.put(`/plans/${planId}/details/${planDetailId}`, formattedData);
   }
 }
 

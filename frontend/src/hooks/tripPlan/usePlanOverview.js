@@ -70,8 +70,8 @@ export const usePlanOverview = (planId) => {
         setError('');
         console.debug('プランデータの取得に成功しました:', tripPlan.data);
       } catch (error) {
-        console.error('プランデータの取得に失敗しました:', error);
-        setError('プランデータの取得に失敗しました。');
+        const { message } = parseError(error, ERROR_MESSAGES.PLAN_FETCH_FAILED);
+        setError(message);
       } finally {
         setLoading(false);
       }
