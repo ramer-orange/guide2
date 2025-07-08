@@ -6,7 +6,7 @@ import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
 // 管理画面ページ
 
-export default function Management() {
+export function Management() {
   // AuthContextからuser情報を取得
   const { user, logout } = useAuth();
   const  navigate = useNavigate();

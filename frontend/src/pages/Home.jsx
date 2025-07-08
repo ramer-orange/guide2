@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 
 // サイトトップページ
 
-export default function Home() {
+export function Home() {
   return (
     <>
       <div>

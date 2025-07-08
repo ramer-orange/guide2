@@ -1,13 +1,13 @@
 import { Link, useParams } from "react-router-dom"
-import PlanDetailItem from "@/components/planCreate/PlanDetailItem";
-import PlanOverview from "@/components/planCreate/planOverview";
-import CurrentDay from "@/components/planCreate/CurrentDay";
+import { PlanDetailItem } from "@/components/planCreate/PlanDetailItem";
+import { PlanOverview } from "@/components/planCreate/PlanOverview";
+import { CurrentDay } from "@/components/planCreate/CurrentDay";
 import { usePlanDetails } from "@/hooks/tripPlan/usePlanDetails";
 import { usePlanOverview } from "@/hooks/tripPlan/usePlanOverview";
 
 // 旅行プラン作成ページ
 
-export default function TripPlan() {
+export function TripPlan() {
   const { planId } = useParams(); // URLパラメータからplanIdを取得
 
   // 旅行概要

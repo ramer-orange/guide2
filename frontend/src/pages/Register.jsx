@@ -4,7 +4,7 @@ import { Box, Typography, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { api } from '@/api/api';
 
-export default function Register() {
+export function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
 

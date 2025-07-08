@@ -4,7 +4,7 @@ import { Box, Typography, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
-export default function Login() {
+export function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const { login } = useAuth();

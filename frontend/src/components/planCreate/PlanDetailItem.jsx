@@ -1,6 +1,6 @@
 import React from 'react';
 
-function PlanDetailItem({ item, index, onPlanDetailChange, onPlanDetailDelete }) {
+export function PlanDetailItem({ item, index, onPlanDetailChange, onPlanDetailDelete }) {
   return (
     <div key={index}>
       <label htmlFor="arrivalTime">
@@ -13,5 +13,3 @@ function PlanDetailItem({ item, index, onPlanDetailChange, onPlanDetailDelete })
   </div>
   );
 }
-
-export default PlanDetailItem;
