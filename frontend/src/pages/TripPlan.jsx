@@ -4,6 +4,7 @@ import { PlanOverview } from "@/components/planCreate/PlanOverview";
 import { CurrentDay } from "@/components/planCreate/CurrentDay";
 import { usePlanDetails } from "@/hooks/tripPlan/usePlanDetails";
 import { usePlanOverview } from "@/hooks/tripPlan/usePlanOverview";
+import { GoogleMap } from "@/components/Map/GoogleMap";
 
 // 旅行プラン作成ページ
 
@@ -68,8 +69,11 @@ export function TripPlan() {
           <div>
             <p>Day {selectedDay}</p>
             <span>{calculateDay(selectedDay)}</span>
-            <div>
-                {/* プラン詳細 */}
+            <div style={{ display: 'flex', gap: '20px' }}>
+              {/* Google Map */}
+              <GoogleMap />
+              {/* プラン詳細 */}
+              <div>
                 {(currentDayPlan || []).map((item, index) => {
                   return (
                     <PlanDetailItem
@@ -81,10 +85,11 @@ export function TripPlan() {
                     />
                   )
                 })}
+                <div>
+                  <button onClick={handleAddPlan}>メモを追加</button>
+                </div>
+              </div>
             </div>
-          </div>
-          <div>
-            <button onClick={handleAddPlan}>メモを追加</button>
           </div>
         </div>
       </div>
