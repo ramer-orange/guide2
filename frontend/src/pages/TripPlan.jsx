@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useParams } from "react-router-dom"
 import { PlanDetailItem } from "@/components/planCreate/PlanDetailItem";
 import { PlanOverview } from "@/components/planCreate/PlanOverview";
@@ -73,7 +74,7 @@ export function TripPlan() {
               {/* Google Map */}
               <GoogleMap />
               {/* プラン詳細 */}
-              <div>
+              <div style={{ flex: 1 }}>
                 {(currentDayPlan || []).map((item, index) => {
                   return (
                     <PlanDetailItem
