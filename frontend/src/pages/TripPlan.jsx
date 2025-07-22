@@ -28,6 +28,7 @@ export function TripPlan() {
     error: detailError,
     loading: detailLoading,
     handleAddPlan,
+    addSpotToPlan,
     handlePlanChange,
     handlePlanDelete,
     handleSelectedDay,
@@ -72,7 +73,7 @@ export function TripPlan() {
             <span>{calculateDay(selectedDay)}</span>
             <div style={{ display: 'flex', gap: '20px' }}>
               {/* Google Map */}
-              <GoogleMap />
+              <GoogleMap onAddSpot={addSpotToPlan} />
               {/* プラン詳細 */}
               <div style={{ flex: 1 }}>
                 {(currentDayPlan || []).map((item, index) => {

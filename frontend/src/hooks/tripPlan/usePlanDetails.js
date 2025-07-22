@@ -76,6 +76,40 @@ export const usePlanDetails = (planId, totalDays) => {
     )
   };
 
+  // マップ上からのスポットをプランに追加する関数
+  const addSpotToPlan = (spotData) => {
+    const newPlanItem = {
+      id: uuid(),
+      type: null,
+      title: spotData.name || '',
+      memo: '',
+      arrivalTime: null,
+      order: null,
+    };
+    changedPlanDetail.current.set(newPlanItem.id, {
+      ...newPlanItem,
+      planId: Number(planId),
+      dayNumber: selectedDay,
+    });
+    
+    setPlanContents(prev => {
+      const updated = {
+        ...prev,
+        [selectedDay]: [
+          ...prev[selectedDay],
+          newPlanItem
+        ]
+      };
+      
+      // 直接保存処理を実行
+      setTimeout(() => {
+        handlePlanDetailUpdate();
+      }, 0);
+      
+      return updated;
+    });
+  };
+
   // 日数の増減時の処理
   useEffect(() => {
     // 日数が増えた時
@@ -160,7 +194,7 @@ export const usePlanDetails = (planId, totalDays) => {
     const timer = setTimeout(() => {
       handlePlanDetailUpdate();
       isPlanDetailChanged.current = false;
-    }, 250);
+    }, 500);
     return () => clearTimeout(timer);
   },[planContents]);
 
@@ -251,6 +285,7 @@ export const usePlanDetails = (planId, totalDays) => {
     planContents,
     setPlanContents,
     handleAddPlan,
+    addSpotToPlan,
     handlePlanChange,
     isPlanDetailChanged,
     createInitialPlanData,
