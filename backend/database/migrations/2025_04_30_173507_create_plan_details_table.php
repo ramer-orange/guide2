@@ -20,6 +20,11 @@ return new class extends Migration
             $table->text('memo')->nullable()->comment('メモ');
             $table->time('arrival_time')->nullable()->comment('到着時間');
             $table->integer('order')->nullable()->comment('表示順');
+            $table->string('place_id')->nullable()->comment('Google PlaceID');
+            $table->decimal('latitude', 10, 8)->nullable()->comment('緯度');
+            $table->decimal('longitude', 11, 8)->nullable()->comment('経度');
+            $table->string('address')->nullable()->comment('住所');
+            $table->decimal('rating', 2, 1)->nullable()->comment('評価');
             $table->timestamps();
         });
     }

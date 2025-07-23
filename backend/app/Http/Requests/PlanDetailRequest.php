@@ -29,6 +29,11 @@ class PlanDetailRequest extends FormRequest
             'memo' => 'nullable|string',
             'arrival_time' => 'nullable|date_format:H:i:s',
             'order' => 'nullable|integer',
+            'place_id' => 'nullable|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'address' => 'nullable|string|max:255',
+            'rating' => 'nullable|numeric|between:0,5',
         ];
     }
 }

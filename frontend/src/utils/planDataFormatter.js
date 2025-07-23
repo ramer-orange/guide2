@@ -23,6 +23,11 @@ export const formatPlanDetail = (tripData) => {
     memo: validatedData.memo,
     arrival_time: validatedData.arrivalTime,
     order: validatedData.order,
+    place_id: validatedData.placeId,
+    latitude: validatedData.latitude,
+    longitude: validatedData.longitude,
+    address: validatedData.address,
+    rating: validatedData.rating,
   };
 
   return formattedData;

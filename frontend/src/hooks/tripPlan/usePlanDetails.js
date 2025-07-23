@@ -78,13 +78,19 @@ export const usePlanDetails = (planId, totalDays) => {
 
   // マップ上からのスポットをプランに追加する関数
   const addSpotToPlan = (spotData) => {
+    console.debug('スポットデータを追加:', spotData);
     const newPlanItem = {
       id: uuid(),
       type: null,
       title: spotData.name || '',
       memo: '',
       arrivalTime: null,
-      order: null,
+      order: planContents[selectedDay].length + 1,
+      placeId: spotData.placeId || '',
+      latitude: spotData.lat || null,
+      longitude: spotData.lng || null,
+      address: spotData.address || '',
+      rating: spotData.rating || null,
     };
     changedPlanDetail.current.set(newPlanItem.id, {
       ...newPlanItem,

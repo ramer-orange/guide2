@@ -18,6 +18,11 @@ class PlanDetail extends Model
         'memo',
         'arrival_time',
         'order',
+        'place_id',
+        'latitude',
+        'longitude',
+        'address',
+        'rating',
     ];
 
     public function plan()
