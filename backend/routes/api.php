@@ -21,6 +21,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // 一括削除ルートを先に定義（より具体的なルートを先に）
     Route::delete('/plans/{plan}/details/bulk', [PlanDetailController::class, 'bulkDestroy'])
         ->name('plans.details.bulk-destroy');
+    // スポット情報のみを取得するルート
+    Route::get('/plans/{plan}/spots', [PlanDetailController::class, 'getSpots'])
+        ->name('plans.spots');
     Route::apiResource('plans.details', PlanDetailController::class)
         ->scoped()
         ->only(['index', 'store', 'update', 'destroy']);

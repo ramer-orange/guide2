@@ -32,3 +32,20 @@ export const formatPlanDetail = (tripData) => {
 
   return formattedData;
 }
+
+// APIから取得したデータを地図用に変換
+export const formatPlanDetailSpots = (spots) => {
+  const formattedSpots = spots.map(spot => ({
+    id: spot.id,
+    lat: parseFloat(spot.latitude),
+    lng: parseFloat(spot.longitude),
+    name: spot.title,
+    address: spot.address,
+    rating: parseFloat(spot.rating),
+    placeId: spot.place_id,
+    dayNumber: spot.day_number,
+    order: spot.order
+  }));
+
+  return formattedSpots
+}

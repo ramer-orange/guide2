@@ -73,7 +73,7 @@ export function TripPlan() {
             <span>{calculateDay(selectedDay)}</span>
             <div style={{ display: 'flex', gap: '20px' }}>
               {/* Google Map */}
-              <GoogleMap onAddSpot={addSpotToPlan} />
+              <GoogleMap onAddSpot={addSpotToPlan} planId={planId} />
               {/* プラン詳細 */}
               <div style={{ flex: 1 }}>
                 {(currentDayPlan || []).map((item, index) => {
