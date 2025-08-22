@@ -8,7 +8,7 @@ import { LoadingOverlay } from './LoadingOverlay';
 import { MAP_CONFIG, MARKER_ICONS, PLACES_API_FIELDS, CSS_ANIMATIONS } from '@/consts/mapConsts';
 import { refreshSpotsAfterDelay, formatRegisteredSpotData, formatNewSpotData, handlePlaceDetailsResponse } from '@/utils/mapHelpers';
 
-const MapWithPlaces = ({ onAddSpot, planId }) => {
+const MapWithPlaces = ({ onAddSpot, planId, onSpotDeleted }) => {
   const map = useMap();
   const placesLib = useMapsLibrary('places');
   
@@ -20,9 +20,31 @@ const MapWithPlaces = ({ onAddSpot, planId }) => {
     selectedRegisteredSpot,
     selectPlace,
     selectRegisteredSpot,
+    clearSelection,
     closeNewSpotInfoWindow,
     closeRegisteredSpotInfoWindow
   } = usePlaceSelection();
+
+  // スポット削除時の処理
+  useEffect(() => {
+    console.log('GoogleMap: setting up onSpotDeleted callback', { onSpotDeleted });
+    if (onSpotDeleted) {
+      const handleSpotDelete = (deletedSpot) => {
+        console.log('GoogleMap: handleSpotDelete called', { deletedSpot, selectedRegisteredSpot });
+        // 削除されたスポットが現在選択中の場合、選択をクリア
+        if (selectedRegisteredSpot && selectedRegisteredSpot.id === deletedSpot.id) {
+          console.log('GoogleMap: clearing selection for deleted spot');
+          clearSelection();
+        }
+        // マーカーデータを再取得
+        console.log('GoogleMap: reloading registered spots');
+        loadRegisteredSpots();
+      };
+      
+      onSpotDeleted.current = handleSpotDelete;
+      console.log('GoogleMap: onSpotDeleted callback set', onSpotDeleted.current);
+    }
+  }, [selectedRegisteredSpot, clearSelection, loadRegisteredSpots, onSpotDeleted]);
 
   // map上のスポットをクリック時の処理
   useEffect(() => {
@@ -114,7 +136,7 @@ const MapWithPlaces = ({ onAddSpot, planId }) => {
   );
 };
 
-export const GoogleMap = ({ onAddSpot, planId }) => {
+export const GoogleMap = ({ onAddSpot, planId, onSpotDeleted }) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   return (
@@ -132,7 +154,7 @@ export const GoogleMap = ({ onAddSpot, planId }) => {
           gestureHandling={'greedy'}
           disableDefaultUI={false}
         >
-          <MapWithPlaces onAddSpot={onAddSpot} planId={planId} />
+          <MapWithPlaces onAddSpot={onAddSpot} planId={planId} onSpotDeleted={onSpotDeleted} />
         </Map>
       </APIProvider>
     </div>

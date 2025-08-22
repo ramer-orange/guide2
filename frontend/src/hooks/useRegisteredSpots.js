@@ -14,6 +14,7 @@ export const useRegisteredSpots = (planId) => {
       setLoading(true);
       const spotData = await fetchPlanSpots(planId);
       const formattedSpots = formatPlanDetailSpots(spotData);
+      console.log('useRegisteredSpots: loaded spots', formattedSpots);
       setRegisteredSpots(formattedSpots);
     } catch (error) {
       console.error('スポットデータの取得に失敗しました:', error);

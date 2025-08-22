@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { v4 as uuid } from "uuid";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
-export const usePlanDetails = (planId, totalDays) => {
+export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
   const [selectedDay, setSelectedDay] = useState(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -217,6 +217,35 @@ export const usePlanDetails = (planId, totalDays) => {
 
       await planDetailUpdate(payload, planId, planDetailId);
 
+      // 新規作成の場合（UUID）は保存後にDBから最新データを取得してIDを更新
+      if (typeof planDetailId === 'string') {
+        console.log('新規スポット保存後、DBから最新データを取得');
+        const updatedData = await fetchPlanDetailData(planId);
+        // 取得したプラン詳細を日付ごとにグループ化
+        const groupedByDays = updatedData.data.reduce((acc, item) => {
+          if (!acc[item.day_number]) {
+            acc[item.day_number] = [];
+          }
+          acc[item.day_number].push({
+            ...item,
+            id: item.id,
+            dayNumber: item.day_number,
+            type: item.type || null,
+            title: item.title || '',
+            memo: item.memo || '',
+            arrivalTime: item.arrival_time || null,
+            order: item.order || null,
+            placeId: item.place_id || '',
+            latitude: item.latitude || null,
+            longitude: item.longitude || null,
+            address: item.address || '',
+            rating: item.rating || null,
+          });
+          return acc;
+        }, {});
+        setPlanContents(groupedByDays);
+      }
+
       setError('');
       console.debug('プランの更新に成功しました:', payload);
     } catch (error) {
@@ -227,8 +256,10 @@ export const usePlanDetails = (planId, totalDays) => {
 
   // プラン詳細データの削除
   const handlePlanDelete = async (index) => {
+    console.log('handlePlanDelete called with index:', index);
     try {
       const deletePlanDetailItem = planContents[selectedDay][index];
+      console.log('deletePlanDetailItem:', deletePlanDetailItem);
       // データベースに存在しないもの(uuidの場合)
       if (typeof deletePlanDetailItem.id !== 'number') {
         // UI上から削除
@@ -236,6 +267,13 @@ export const usePlanDetails = (planId, totalDays) => {
           ...prev,
           [selectedDay]: prev[selectedDay].filter((_, i) => i !== index)
         }));
+        
+        // UUID形式でもマーカー更新処理を実行（マップに表示されている可能性があるため）
+        console.log('削除処理 (UUID): onSpotDeleted callback check', { onSpotDeleted, deletePlanDetailItem });
+        if (onSpotDeleted && onSpotDeleted.current) {
+          console.log('削除処理 (UUID): calling onSpotDeleted callback');
+          onSpotDeleted.current(deletePlanDetailItem);
+        }
         return;
       }
 
@@ -247,6 +285,13 @@ export const usePlanDetails = (planId, totalDays) => {
       }));
       setError('');
       console.debug('プランの削除に成功しました:', deletePlanDetailItem);
+      
+      // マップのマーカーを更新
+      console.log('削除処理: onSpotDeleted callback check', { onSpotDeleted, deletePlanDetailItem });
+      if (onSpotDeleted && onSpotDeleted.current) {
+        console.log('削除処理: calling onSpotDeleted callback');
+        onSpotDeleted.current(deletePlanDetailItem);
+      }
     } catch (error) {
       const { message } = parseError(error, ERROR_MESSAGES.PLAN_DELETE_FAILED);
       setError(message);

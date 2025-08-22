@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link, useParams } from "react-router-dom"
 import { PlanDetailItem } from "@/components/planCreate/PlanDetailItem";
 import { PlanOverview } from "@/components/planCreate/PlanOverview";
@@ -11,6 +11,7 @@ import { GoogleMap } from "@/components/Map/GoogleMap";
 
 export function TripPlan() {
   const { planId } = useParams(); // URLパラメータからplanIdを取得
+  const onSpotDeletedRef = useRef(null);
 
   // 旅行概要
   const {
@@ -33,7 +34,7 @@ export function TripPlan() {
     handlePlanDelete,
     handleSelectedDay,
     currentDayPlan,
-  } = usePlanDetails(planId, totalDays);
+  } = usePlanDetails(planId, totalDays, onSpotDeletedRef);
 
   // データがロード中の場合
   if (overviewLoading || detailLoading) {
@@ -73,7 +74,7 @@ export function TripPlan() {
             <span>{calculateDay(selectedDay)}</span>
             <div style={{ display: 'flex', gap: '20px' }}>
               {/* Google Map */}
-              <GoogleMap onAddSpot={addSpotToPlan} planId={planId} />
+              <GoogleMap onAddSpot={addSpotToPlan} planId={planId} onSpotDeleted={onSpotDeletedRef} />
               {/* プラン詳細 */}
               <div style={{ flex: 1 }}>
                 {(currentDayPlan || []).map((item, index) => {
