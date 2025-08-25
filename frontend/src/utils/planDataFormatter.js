@@ -23,7 +23,29 @@ export const formatPlanDetail = (tripData) => {
     memo: validatedData.memo,
     arrival_time: validatedData.arrivalTime,
     order: validatedData.order,
+    place_id: validatedData.placeId,
+    latitude: validatedData.latitude,
+    longitude: validatedData.longitude,
+    address: validatedData.address,
+    rating: validatedData.rating,
   };
 
   return formattedData;
+}
+
+// APIから取得したデータを地図用に変換
+export const formatPlanDetailSpots = (spots) => {
+  const formattedSpots = spots.map(spot => ({
+    id: spot.id,
+    lat: parseFloat(spot.latitude),
+    lng: parseFloat(spot.longitude),
+    name: spot.title,
+    address: spot.address,
+    rating: parseFloat(spot.rating),
+    placeId: spot.place_id,
+    dayNumber: spot.day_number,
+    order: spot.order
+  }));
+
+  return formattedSpots
 }

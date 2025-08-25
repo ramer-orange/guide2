@@ -38,4 +38,10 @@ const bulkPlanDeleteByDays = async (deleteDays, planId) => {
   });
 }
 
-export { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays };
+// プラン内のスポット情報のみを取得
+const fetchPlanSpots = async (planId) => {
+  const response = await api.get(`/plans/${planId}/spots`);
+  return response.data;
+};
+
+export { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays, fetchPlanSpots };

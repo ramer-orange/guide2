@@ -53,4 +53,33 @@ class PlanDetailController extends Controller
 
         return response()->json(['message' => 'Plan detail deleted successfully(Bulk).'], 200);
     }
+
+    /**
+     * プラン内のスポット情報のみを取得
+     */
+    public function getSpots(Plan $plan)
+    {
+        Gate::authorize('view', $plan);
+
+        // 緯度・経度が存在するスポットのみを取得
+        $spots = $plan->details()
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->select([
+                'id',
+                'title',
+                'latitude',
+                'longitude',
+                'place_id',
+                'address',
+                'rating',
+                'day_number',
+                'order'
+            ])
+            ->orderBy('day_number')
+            ->orderBy('order')
+            ->get();
+
+        return response()->json($spots, 200);
+    }
 }

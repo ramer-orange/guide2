@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { v4 as uuid } from "uuid";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
-export const usePlanDetails = (planId, totalDays) => {
+export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
   const [selectedDay, setSelectedDay] = useState(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -74,6 +74,46 @@ export const usePlanDetails = (planId, totalDays) => {
         ]
       })
     )
+  };
+
+  // マップ上からのスポットをプランに追加する関数
+  const addSpotToPlan = (spotData) => {
+    console.debug('スポットデータを追加:', spotData);
+    const newPlanItem = {
+      id: uuid(),
+      type: null,
+      title: spotData.name || '',
+      memo: '',
+      arrivalTime: null,
+      order: planContents[selectedDay].length + 1,
+      placeId: spotData.placeId || '',
+      latitude: spotData.lat || null,
+      longitude: spotData.lng || null,
+      address: spotData.address || '',
+      rating: spotData.rating || null,
+    };
+    changedPlanDetail.current.set(newPlanItem.id, {
+      ...newPlanItem,
+      planId: Number(planId),
+      dayNumber: selectedDay,
+    });
+    
+    setPlanContents(prev => {
+      const updated = {
+        ...prev,
+        [selectedDay]: [
+          ...prev[selectedDay],
+          newPlanItem
+        ]
+      };
+      
+      // 直接保存処理を実行
+      setTimeout(() => {
+        handlePlanDetailUpdate();
+      }, 0);
+      
+      return updated;
+    });
   };
 
   // 日数の増減時の処理
@@ -160,7 +200,7 @@ export const usePlanDetails = (planId, totalDays) => {
     const timer = setTimeout(() => {
       handlePlanDetailUpdate();
       isPlanDetailChanged.current = false;
-    }, 250);
+    }, 500);
     return () => clearTimeout(timer);
   },[planContents]);
 
@@ -176,6 +216,34 @@ export const usePlanDetails = (planId, totalDays) => {
       changedPlanDetail.current.clear();
 
       await planDetailUpdate(payload, planId, planDetailId);
+
+      // 新規作成の場合（UUID）は保存後にDBから最新データを取得してIDを更新
+      if (typeof planDetailId === 'string') {
+        const updatedData = await fetchPlanDetailData(planId);
+        // 取得したプラン詳細を日付ごとにグループ化
+        const groupedByDays = updatedData.data.reduce((acc, item) => {
+          if (!acc[item.day_number]) {
+            acc[item.day_number] = [];
+          }
+          acc[item.day_number].push({
+            ...item,
+            id: item.id,
+            dayNumber: item.day_number,
+            type: item.type || null,
+            title: item.title || '',
+            memo: item.memo || '',
+            arrivalTime: item.arrival_time || null,
+            order: item.order || null,
+            placeId: item.place_id || '',
+            latitude: item.latitude || null,
+            longitude: item.longitude || null,
+            address: item.address || '',
+            rating: item.rating || null,
+          });
+          return acc;
+        }, {});
+        setPlanContents(groupedByDays);
+      }
 
       setError('');
       console.debug('プランの更新に成功しました:', payload);
@@ -196,6 +264,11 @@ export const usePlanDetails = (planId, totalDays) => {
           ...prev,
           [selectedDay]: prev[selectedDay].filter((_, i) => i !== index)
         }));
+        
+        // UUID形式でもマーカー更新処理を実行（マップに表示されている可能性があるため）
+        if (onSpotDeleted && onSpotDeleted.current) {
+          onSpotDeleted.current(deletePlanDetailItem);
+        }
         return;
       }
 
@@ -207,6 +280,11 @@ export const usePlanDetails = (planId, totalDays) => {
       }));
       setError('');
       console.debug('プランの削除に成功しました:', deletePlanDetailItem);
+      
+      // マップのマーカーを更新
+      if (onSpotDeleted && onSpotDeleted.current) {
+        onSpotDeleted.current(deletePlanDetailItem);
+      }
     } catch (error) {
       const { message } = parseError(error, ERROR_MESSAGES.PLAN_DELETE_FAILED);
       setError(message);
@@ -251,6 +329,7 @@ export const usePlanDetails = (planId, totalDays) => {
     planContents,
     setPlanContents,
     handleAddPlan,
+    addSpotToPlan,
     handlePlanChange,
     isPlanDetailChanged,
     createInitialPlanData,
