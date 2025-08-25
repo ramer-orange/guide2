@@ -219,7 +219,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
 
       // 新規作成の場合（UUID）は保存後にDBから最新データを取得してIDを更新
       if (typeof planDetailId === 'string') {
-        console.log('新規スポット保存後、DBから最新データを取得');
         const updatedData = await fetchPlanDetailData(planId);
         // 取得したプラン詳細を日付ごとにグループ化
         const groupedByDays = updatedData.data.reduce((acc, item) => {
@@ -256,10 +255,8 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
 
   // プラン詳細データの削除
   const handlePlanDelete = async (index) => {
-    console.log('handlePlanDelete called with index:', index);
     try {
       const deletePlanDetailItem = planContents[selectedDay][index];
-      console.log('deletePlanDetailItem:', deletePlanDetailItem);
       // データベースに存在しないもの(uuidの場合)
       if (typeof deletePlanDetailItem.id !== 'number') {
         // UI上から削除
@@ -269,9 +266,7 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
         }));
         
         // UUID形式でもマーカー更新処理を実行（マップに表示されている可能性があるため）
-        console.log('削除処理 (UUID): onSpotDeleted callback check', { onSpotDeleted, deletePlanDetailItem });
         if (onSpotDeleted && onSpotDeleted.current) {
-          console.log('削除処理 (UUID): calling onSpotDeleted callback');
           onSpotDeleted.current(deletePlanDetailItem);
         }
         return;
@@ -287,9 +282,7 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
       console.debug('プランの削除に成功しました:', deletePlanDetailItem);
       
       // マップのマーカーを更新
-      console.log('削除処理: onSpotDeleted callback check', { onSpotDeleted, deletePlanDetailItem });
       if (onSpotDeleted && onSpotDeleted.current) {
-        console.log('削除処理: calling onSpotDeleted callback');
         onSpotDeleted.current(deletePlanDetailItem);
       }
     } catch (error) {

@@ -27,22 +27,17 @@ const MapWithPlaces = ({ onAddSpot, planId, onSpotDeleted }) => {
 
   // スポット削除時の処理
   useEffect(() => {
-    console.log('GoogleMap: setting up onSpotDeleted callback', { onSpotDeleted });
     if (onSpotDeleted) {
       const handleSpotDelete = (deletedSpot) => {
-        console.log('GoogleMap: handleSpotDelete called', { deletedSpot, selectedRegisteredSpot });
         // 削除されたスポットが現在選択中の場合、選択をクリア
         if (selectedRegisteredSpot && selectedRegisteredSpot.id === deletedSpot.id) {
-          console.log('GoogleMap: clearing selection for deleted spot');
           clearSelection();
         }
         // マーカーデータを再取得
-        console.log('GoogleMap: reloading registered spots');
         loadRegisteredSpots();
       };
       
       onSpotDeleted.current = handleSpotDelete;
-      console.log('GoogleMap: onSpotDeleted callback set', onSpotDeleted.current);
     }
   }, [selectedRegisteredSpot, clearSelection, loadRegisteredSpots, onSpotDeleted]);
 
