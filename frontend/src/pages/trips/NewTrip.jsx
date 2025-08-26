@@ -1,8 +1,8 @@
-import { useNewTrip } from "@/hooks/tripPlan/useNewTrip";
-import { NewTripOverview } from "@/components/planCreate/NewTripOverview";
-import { PlanCreateButton } from "@/components/button/PlanCreateButton";
-import { BackToManagementButton } from "@/components/button/BackToManagementButton";
-import { PageTitle } from "@/components/PageTitle/PageTitle";
+import { useNewTrip } from "@/hooks/trips/useNewTrip";
+import { NewTripOverview } from "@/components/forms/NewTripOverview";
+import { PlanCreateButton } from "@/components/ui/PlanCreateButton";
+import { BackToManagementButton } from "@/components/ui/BackToManagementButton";
+import { PageTitle } from "@/components/ui/PageTitle";
 import { Link } from "react-router-dom";
 
 // 旅行名と日付を入力するページ

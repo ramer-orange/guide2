@@ -1,11 +1,11 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import { Home } from "@/pages/Home";
-import { Management } from "@/pages/Management";
-import { TripPlan } from "@/pages/TripPlan";
-import { NewTripPage } from "@/pages/NewTrip";
-import { Login } from "@/pages/Login";
-import { Register } from "@/pages/Register";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Management } from "@/pages/trips/Management";
+import { TripPlan } from "@/pages/trips/TripPlan";
+import { NewTripPage } from "@/pages/trips/NewTrip";
+import { Login } from "@/pages/auth/Login";
+import { Register } from "@/pages/auth/Register";
+import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 
 
 export const routesBasic = createBrowserRouter(

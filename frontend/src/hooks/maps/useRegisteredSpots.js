@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { fetchPlanSpots } from '@/api/planDetailApi';
-import { formatPlanDetailSpots } from "@/utils/planDataFormatter";
+import { fetchPlanSpots } from '@/services/api/planDetailApi';
+import { formatPlanDetailSpots } from '@/utils/planDataFormatter';
 
 export const useRegisteredSpots = (planId) => {
   const [registeredSpots, setRegisteredSpots] = useState([]);

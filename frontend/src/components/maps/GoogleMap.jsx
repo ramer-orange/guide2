@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { APIProvider, Map, Marker, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
-import { useRegisteredSpots } from '@/hooks/useRegisteredSpots';
-import { usePlaceSelection } from '@/hooks/usePlaceSelection';
+import { useRegisteredSpots } from '@/hooks/maps/useRegisteredSpots';
+import { usePlaceSelection } from '@/hooks/maps/usePlaceSelection';
 import { RegisteredSpotInfoWindow } from './RegisteredSpotInfoWindow';
 import { NewSpotInfoWindow } from './NewSpotInfoWindow';
 import { LoadingOverlay } from './LoadingOverlay';
-import { MAP_CONFIG, MARKER_ICONS, PLACES_API_FIELDS, CSS_ANIMATIONS } from '@/consts/mapConsts';
-import { refreshSpotsAfterDelay, formatRegisteredSpotData, formatNewSpotData, handlePlaceDetailsResponse } from '@/utils/mapHelpers';
+import { MAP_CONFIG, MARKER_ICONS, PLACES_API_FIELDS, CSS_ANIMATIONS } from '@/utils/map/mapConsts';
+import { refreshSpotsAfterDelay, handlePlaceDetailsResponse } from '@/utils/map/mapHelpers';
+import { formatRegisteredSpotData, formatNewSpotData } from '@/utils/planDataFormatter';
 
 const MapWithPlaces = ({ onAddSpot, planId, onSpotDeleted }) => {
   const map = useMap();

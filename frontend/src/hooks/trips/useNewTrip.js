@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
-import { planOverviewCreate } from "@/api/planOverviewApi";
+import { planOverviewCreate } from '@/services/api/planOverviewApi';
 
 export const useNewTrip = () => {
   const [tripData, setTripData] = useState({});

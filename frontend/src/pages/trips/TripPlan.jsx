@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
 import { Link, useParams } from "react-router-dom"
-import { PlanDetailItem } from "@/components/planCreate/PlanDetailItem";
-import { PlanOverview } from "@/components/planCreate/PlanOverview";
-import { CurrentDay } from "@/components/planCreate/CurrentDay";
-import { usePlanDetails } from "@/hooks/tripPlan/usePlanDetails";
-import { usePlanOverview } from "@/hooks/tripPlan/usePlanOverview";
-import { GoogleMap } from "@/components/Map/GoogleMap";
+import { PlanDetailItem } from "@/components/forms/PlanDetailItem";
+import { PlanOverview } from "@/components/forms/planOverview";
+import { CurrentDay } from "@/components/forms/CurrentDay";
+import { usePlanDetails } from "@/hooks/trips/usePlanDetails";
+import { usePlanOverview } from "@/hooks/trips/usePlanOverview";
+import { GoogleMap } from "@/components/maps/GoogleMap";
 
 // 旅行プラン作成ページ
 

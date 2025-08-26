@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormContainer, TextFieldElement, PasswordElement } from 'react-hook-form-mui';
 import { Box, Typography, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/store/AuthContext';
 
 export function Login() {
   const navigate = useNavigate();

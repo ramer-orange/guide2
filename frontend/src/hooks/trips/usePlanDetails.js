@@ -1,4 +1,4 @@
-import { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays } from "@/api/planDetailApi";
+import { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays } from "@/services/api/planDetailApi";
 import { useState, useEffect, useRef } from "react";
 import { v4 as uuid } from "uuid";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';

@@ -1,7 +1,7 @@
-import { useAuth } from "@/contexts/AuthContext"
+import { useAuth } from "@/store/AuthContext"
 import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react";
-import { api } from "@/api/api";
+import { api } from "@/services/api/api";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
 // 管理画面ページ
