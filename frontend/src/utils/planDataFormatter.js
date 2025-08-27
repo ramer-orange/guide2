@@ -1,4 +1,4 @@
-import { schemas } from "@/validation";
+import { schemas } from "@/utils/validation/schemas";
 
 // 旅行概要をAPIに送信するためのフォーマットを行う関数
 export const formatPlanOverview = (tripData) => {
@@ -49,3 +49,32 @@ export const formatPlanDetailSpots = (spots) => {
 
   return formattedSpots
 }
+
+// 登録済みスポットのデータフォーマット
+export const formatRegisteredSpotData = (spot) => {
+  return {
+    name: spot.name,
+    address: spot.address,
+    lat: spot.lat,
+    lng: spot.lng,
+    placeId: spot.placeId,
+    rating: spot.rating
+  };
+};
+
+// 新規スポット（Place）のデータフォーマット
+export const formatNewSpotData = (place) => {
+  // 位置情報がない場合
+  if (!place.geometry || !place.geometry.location) {
+    throw new Error('このスポットのデータが見つかりません。');
+  }
+
+  return {
+    name: place.name,
+    address: place.formatted_address,
+    lat: place.geometry.location.lat(),
+    lng: place.geometry.location.lng(),
+    placeId: place.place_id,
+    rating: place.rating
+  };
+};
