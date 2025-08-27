@@ -3,7 +3,6 @@ import { IoAdd, IoTime, IoReorderFour, IoClose, IoCheckmark } from 'react-icons/
 import { Button, IconButton } from './Button';
 import { BottomSheet, SNAP_POINTS } from './BottomSheet';
 
-// 強化されたPlanDetailItem
 const EnhancedPlanDetailItem = ({ 
   item, 
   index, 
@@ -12,8 +11,6 @@ const EnhancedPlanDetailItem = ({
   isHighlighted = false,
   isDragging = false
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-
   const handleChange = (field, value) => {
     const event = {
       target: {
@@ -26,54 +23,33 @@ const EnhancedPlanDetailItem = ({
 
   return (
     <div
-      className={`plan-detail-item ${isHighlighted ? 'plan-detail-item--highlighted' : ''} ${isDragging ? 'plan-detail-item--dragging' : ''}`}
-      style={{
-        position: 'relative',
-        padding: 'var(--space-4)',
-        backgroundColor: isHighlighted ? 'var(--primary)' : 'var(--surface)',
-        color: isHighlighted ? 'var(--bg)' : 'var(--text)',
-        borderRadius: 'var(--radius)',
-        border: '1px solid var(--outline)',
-        marginBottom: 'var(--space-3)',
-        transition: 'all var(--duration-normal) var(--ease-out)',
-        opacity: isDragging ? 0.5 : 1,
-        transform: isDragging ? 'rotate(5deg)' : 'none'
-      }}
+      className={`relative p-6 mb-4 rounded-xl border transition-all duration-200 ease-out ${
+        isHighlighted 
+          ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 shadow-md' 
+          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600'
+      } ${
+        isDragging ? 'opacity-50' : ''
+      }`}
     >
-      {/* ドラッグハンドル */}
-      <div
-        className="drag-handle"
-        style={{
-          position: 'absolute',
-          left: 'var(--space-2)',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          color: 'var(--text-muted)',
-          cursor: 'grab',
-          padding: 'var(--space-1)'
-        }}
-        onMouseDown={(e) => e.stopPropagation()}
-        role="button"
-        tabIndex={0}
-        aria-label={`${item.title || 'アイテム'}を移動`}
-      >
-        <IoReorderFour size={16} />
-      </div>
+      
+      
+              {/* ドラッグハンドル */}
+        <div
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 dark:text-gray-500 cursor-grab active:cursor-grabbing"
+          onMouseDown={(e) => e.stopPropagation()}
+          role="button"
+          tabIndex={0}
+          aria-label={`${item.title || 'アイテム'}を移動`}
+        >
+          <IoReorderFour size={16} />
+        </div>
 
-      <div style={{ marginLeft: 'var(--space-8)', marginRight: 'var(--space-8)' }}>
+      <div className="ml-8 mr-8 space-y-4">
         {/* 時刻入力 */}
-        <div style={{ marginBottom: 'var(--space-3)' }}>
+        <div>
           <label
             htmlFor={`arrivalTime-${index}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 'var(--font-weight-medium)',
-              marginBottom: 'var(--space-2)',
-              color: isHighlighted ? 'var(--bg)' : 'var(--text)'
-            }}
+            className="flex items-center gap-2 text-sm font-medium mb-2 text-gray-700 dark:text-gray-300"
           >
             <IoTime size={16} aria-hidden="true" />
             到着時刻
@@ -84,36 +60,15 @@ const EnhancedPlanDetailItem = ({
             name="arrivalTime"
             value={item.arrivalTime || ''}
             onChange={(e) => handleChange('arrivalTime', e.target.value)}
-            style={{
-              width: '100%',
-              padding: 'var(--space-2) var(--space-3)',
-              border: `1px solid ${isHighlighted ? 'rgba(255,255,255,0.3)' : 'var(--outline)'}`,
-              borderRadius: 'var(--radius)',
-              backgroundColor: isHighlighted ? 'rgba(255,255,255,0.1)' : 'var(--bg)',
-              color: isHighlighted ? 'var(--bg)' : 'var(--text)',
-              fontSize: 'var(--font-size-sm)',
-              outline: 'none'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = isHighlighted ? 'rgba(255,255,255,0.6)' : 'var(--outline-focus)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = isHighlighted ? 'rgba(255,255,255,0.3)' : 'var(--outline)';
-            }}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400"
           />
         </div>
 
         {/* タイトル入力 */}
-        <div style={{ marginBottom: 'var(--space-3)' }}>
+        <div>
           <label
             htmlFor={`title-${index}`}
-            style={{
-              display: 'block',
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 'var(--font-weight-medium)',
-              marginBottom: 'var(--space-2)',
-              color: isHighlighted ? 'var(--bg)' : 'var(--text)'
-            }}
+            className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300"
           >
             スポット名
           </label>
@@ -124,37 +79,15 @@ const EnhancedPlanDetailItem = ({
             value={item.title || ''}
             onChange={(e) => handleChange('title', e.target.value)}
             placeholder="スポット名を入力..."
-            style={{
-              width: '100%',
-              padding: 'var(--space-2) var(--space-3)',
-              border: `1px solid ${isHighlighted ? 'rgba(255,255,255,0.3)' : 'var(--outline)'}`,
-              borderRadius: 'var(--radius)',
-              backgroundColor: isHighlighted ? 'rgba(255,255,255,0.1)' : 'var(--bg)',
-              color: isHighlighted ? 'var(--bg)' : 'var(--text)',
-              fontSize: 'var(--font-size-base)',
-              fontWeight: 'var(--font-weight-medium)',
-              outline: 'none'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = isHighlighted ? 'rgba(255,255,255,0.6)' : 'var(--outline-focus)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = isHighlighted ? 'rgba(255,255,255,0.3)' : 'var(--outline)';
-            }}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-400"
           />
         </div>
 
         {/* メモ入力 */}
-        <div style={{ marginBottom: 'var(--space-2)' }}>
+        <div>
           <label
             htmlFor={`memo-${index}`}
-            style={{
-              display: 'block',
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 'var(--font-weight-medium)',
-              marginBottom: 'var(--space-2)',
-              color: isHighlighted ? 'var(--bg)' : 'var(--text)'
-            }}
+            className="block text-sm font-medium mb-2 text-gray-600 dark:text-gray-400"
           >
             メモ
           </label>
@@ -165,25 +98,7 @@ const EnhancedPlanDetailItem = ({
             onChange={(e) => handleChange('memo', e.target.value)}
             placeholder="メモや注意事項..."
             rows={2}
-            style={{
-              width: '100%',
-              padding: 'var(--space-2) var(--space-3)',
-              border: `1px solid ${isHighlighted ? 'rgba(255,255,255,0.3)' : 'var(--outline)'}`,
-              borderRadius: 'var(--radius)',
-              backgroundColor: isHighlighted ? 'rgba(255,255,255,0.1)' : 'var(--bg)',
-              color: isHighlighted ? 'var(--bg)' : 'var(--text)',
-              fontSize: 'var(--font-size-sm)',
-              lineHeight: 'var(--line-height-normal)',
-              outline: 'none',
-              resize: 'vertical',
-              fontFamily: 'inherit'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = isHighlighted ? 'rgba(255,255,255,0.6)' : 'var(--outline-focus)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = isHighlighted ? 'rgba(255,255,255,0.3)' : 'var(--outline)';
-            }}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 dark:focus:border-blue-400 resize-vertical font-inherit min-h-[80px]"
           />
         </div>
       </div>
@@ -195,12 +110,7 @@ const EnhancedPlanDetailItem = ({
         variant="ghost"
         size="sm"
         ariaLabel={`${item.title || 'このアイテム'}を削除`}
-        style={{
-          position: 'absolute',
-          top: 'var(--space-2)',
-          right: 'var(--space-2)',
-          color: isHighlighted ? 'var(--bg)' : 'var(--text-muted)'
-        }}
+        className="absolute top-2 right-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400"
       />
 
       {/* ハイライト効果のアニメーション */}
@@ -245,44 +155,44 @@ const DayTab = ({ day, isActive, onClick, dayInfo }) => (
   <button
     type="button"
     onClick={() => onClick(day)}
-    className={`day-tab ${isActive ? 'day-tab--active' : ''}`}
-    style={{
-      padding: 'var(--space-3) var(--space-4)',
-      border: 'none',
-      borderRadius: 'var(--radius)',
-      backgroundColor: isActive ? 'var(--primary)' : 'transparent',
-      color: isActive ? 'var(--bg)' : 'var(--text)',
-      fontSize: 'var(--font-size-sm)',
-      fontWeight: 'var(--font-weight-medium)',
-      cursor: 'pointer',
-      transition: 'all var(--duration-fast) var(--ease-out)',
-      minWidth: '80px',
-      textAlign: 'center'
-    }}
-    onMouseEnter={(e) => {
-      if (!isActive) {
-        e.target.style.backgroundColor = 'var(--surface)';
-      }
-    }}
-    onMouseLeave={(e) => {
-      if (!isActive) {
-        e.target.style.backgroundColor = 'transparent';
-      }
-    }}
+    className={`day-tab ${isActive ? 'day-tab--active' : ''} px-5 py-4 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300 ease-out min-w-[90px] text-center relative overflow-hidden ${
+      isActive 
+        ? 'bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl border-none transform scale-105' 
+        : 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-blue-600 hover:-translate-y-0.5 hover:shadow-lg'
+    }`}
     aria-label={`${day}日目 ${dayInfo ? `(${dayInfo.date})` : ''}`}
   >
-    <div>Day {day}</div>
-    {dayInfo?.date && (
-      <div
-        style={{
-          fontSize: 'var(--font-size-xs)',
-          opacity: 0.8,
-          marginTop: 'var(--space-1)'
-        }}
-      >
+    {/* アクティブ時の装飾的な背景 */}
+    {isActive && (
+      <>
+        {/* メインのグラデーション背景 */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-indigo-500/15 to-purple-500/10 rounded-xl" />
+        
+        {/* 微細な光の効果 */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/15 via-transparent to-transparent rounded-xl" />
+        
+        {/* 下部のアクセント */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400/60 via-indigo-400/60 to-purple-400/60 rounded-b-xl" />
+        
+        {/* 微細なパターン効果 */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-2 right-2 w-2 h-2 bg-white/20 rounded-full" />
+          <div className="absolute top-4 right-6 w-1 h-1 bg-white/15 rounded-full" />
+          <div className="absolute top-6 right-3 w-1.5 h-1.5 bg-white/25 rounded-full" />
+        </div>
+      </>
+    )}
+    
+    <div className="relative z-10">
+      <div className="text-lg font-bold mb-1 drop-shadow-sm">
+        Day {day}
+      </div>
+      {dayInfo?.date && (
+              <div className={`text-xs font-medium ${isActive ? 'text-white/95 drop-shadow-sm' : 'opacity-70'}`}>
         {dayInfo.date}
       </div>
-    )}
+      )}
+    </div>
   </button>
 );
 
@@ -301,7 +211,7 @@ export const PlanPanel = ({
   isMobile = false
 }) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [currentSnap, setCurrentSnap] = useState(SNAP_POINTS.COLLAPSED);
+  // const [currentSnap, setCurrentSnap] = useState(SNAP_POINTS.COLLAPSED);
   const scrollRef = useRef(null);
 
   // ハイライトされたアイテムへのスクロール
@@ -320,61 +230,26 @@ export const PlanPanel = ({
     }
   }, [highlightedItemIndex]);
 
-  // 移動時間計算（仮想的な実装）
-  const calculateTotalTime = () => {
-    if (!currentDayPlan || currentDayPlan.length === 0) return null;
-    
-    const firstTime = currentDayPlan[0]?.arrivalTime;
-    const lastTime = currentDayPlan[currentDayPlan.length - 1]?.arrivalTime;
-    
-    if (firstTime && lastTime) {
-      return `${firstTime} - ${lastTime}`;
-    }
-    
-    return null;
-  };
-
   const panelContent = (
-    <div className="plan-panel-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="plan-panel-content h-full flex flex-col">
       {/* ヘッダー */}
-      <div
-        style={{
-          padding: 'var(--space-4) var(--space-6)',
-          borderBottom: '1px solid var(--outline)',
-          flexShrink: 0
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 'var(--space-4)'
-          }}
-        >
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 'var(--font-size-xl)',
-              fontWeight: 'var(--font-weight-semibold)',
-              color: 'var(--text)'
-            }}
-          >
-            旅行プラン
-          </h2>
+      <div className="p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 relative">
+        {/* 装飾的な背景要素 */}
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-600 to-green-500 opacity-5 rounded-full transform translate-x-8 -translate-y-8" />
+        
+        <div className="flex items-center justify-between mb-4 relative z-10">
+          <div>
+            <h2 className="m-0 text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              旅行プラン
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-0">
+              日別の詳細なスケジュールを管理
+            </p>
+          </div>
         </div>
 
         {/* 日タブ */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 'var(--space-2)',
-            overflow: 'auto',
-            WebkitOverflowScrolling: 'touch',
-            paddingBottom: 'var(--space-2)',
-            marginBottom: 'var(--space-3)'
-          }}
-        >
+        <div className="flex gap-3 overflow-auto pb-2 mb-4 relative z-10 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
           {Array.from({ length: totalDays }, (_, index) => {
             const day = index + 1;
             return (
@@ -388,90 +263,23 @@ export const PlanPanel = ({
             );
           })}
         </div>
-
-        {/* 現在の日の情報 */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 'var(--space-2)'
-          }}
-        >
-          <div>
-            <h3
-              style={{
-                margin: 0,
-                fontSize: 'var(--font-size-lg)',
-                fontWeight: 'var(--font-weight-semibold)',
-                color: 'var(--text)'
-              }}
-            >
-              Day {selectedDay}
-            </h3>
-            {dayInfos[selectedDay - 1]?.date && (
-              <p
-                style={{
-                  margin: '0',
-                  fontSize: 'var(--font-size-sm)',
-                  color: 'var(--text-muted)'
-                }}
-              >
-                {dayInfos[selectedDay - 1].date}
-              </p>
-            )}
-          </div>
-          
-          {calculateTotalTime() && (
-            <div
-              style={{
-                fontSize: 'var(--font-size-sm)',
-                color: 'var(--text-muted)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-1)'
-              }}
-            >
-              <IoTime size={14} aria-hidden="true" />
-              {calculateTotalTime()}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* コンテンツエリア */}
       <div
         ref={scrollRef}
-        style={{
-          flex: 1,
-          overflow: 'auto',
-          padding: 'var(--space-4) var(--space-6)',
-          WebkitOverflowScrolling: 'touch'
-        }}
+        className="flex-1 overflow-auto px-6 py-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
       >
         {currentDayPlan.length === 0 ? (
-          <div
-            style={{
-              textAlign: 'center',
-              padding: 'var(--space-8) var(--space-4)',
-              color: 'var(--text-muted)'
-            }}
-          >
-            <div
-              style={{
-                fontSize: '48px',
-                marginBottom: 'var(--space-4)',
-                opacity: 0.5
-              }}
-            >
-              📍
+          <div className="text-center py-12 px-6 text-gray-600 dark:text-gray-400 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 my-4">
+            <div className="text-6xl mb-6 opacity-60 grayscale-[30%]">
+              🗺️
             </div>
-            <p style={{ fontSize: 'var(--font-size-lg)', marginBottom: 'var(--space-2)' }}>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               まだスポットがありません
-            </p>
-            <p style={{ fontSize: 'var(--font-size-sm)' }}>
-              地図からスポットを選択してプランに追加しましょう
+            </h3>
+            <p className="text-base leading-relaxed max-w-xs mx-auto">
+              地図からスポットを選択して、理想の旅行プランを作成しましょう
             </p>
           </div>
         ) : (
@@ -491,21 +299,16 @@ export const PlanPanel = ({
       </div>
 
       {/* フッター */}
-      <div
-        style={{
-          padding: 'var(--space-4) var(--space-6)',
-          borderTop: '1px solid var(--outline)',
-          flexShrink: 0
-        }}
-      >
+      <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
         <Button
           variant="outline"
           leftIcon={<IoAdd />}
           onClick={onAddPlan}
           isFullWidth
-          ariaLabel="メモを追加"
+          ariaLabel="プランを追加"
+          className="rounded-xl p-4 text-base font-semibold border-2 border-blue-600 text-blue-600 bg-white dark:bg-gray-900 transition-all duration-200 ease-out shadow-sm hover:bg-blue-600 hover:text-white hover:-translate-y-0.5 hover:shadow-lg"
         >
-          メモを追加
+          プランを追加
         </Button>
       </div>
     </div>
@@ -519,13 +322,7 @@ export const PlanPanel = ({
         <Button
           variant="primary"
           onClick={() => setIsBottomSheetOpen(true)}
-          style={{
-            position: 'fixed',
-            bottom: 'var(--space-6)',
-            left: 'var(--space-6)',
-            right: 'var(--space-6)',
-            zIndex: 'var(--z-fixed)'
-          }}
+          className="fixed bottom-6 left-6 right-6 z-30 rounded-2xl px-6 py-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-green-500 border-none shadow-lg transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl"
         >
           プラン詳細 ({currentDayPlan.length})
         </Button>
@@ -546,17 +343,7 @@ export const PlanPanel = ({
   // デスクトップ版（固定パネル）
   return (
     <div
-      className={`plan-panel ${className}`}
-      style={{
-        height: '100%',
-        backgroundColor: 'var(--bg)',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px solid var(--outline)',
-        boxShadow: 'var(--elev1)',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
+      className={`plan-panel ${className} h-full bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col`}
     >
       {panelContent}
     </div>

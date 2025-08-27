@@ -23,8 +23,21 @@ export default {
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
+      scrollbar: {
+        thin: '8px',
+        thumb: {
+          DEFAULT: '#d1d5db',
+          dark: '#4b5563',
+        },
+        track: {
+          DEFAULT: '#f3f4f6',
+          dark: '#1f2937',
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
   darkMode: 'class',
 }

@@ -10,7 +10,7 @@ import { MAP_CONFIG, MARKER_ICONS, PLACES_API_FIELDS, CSS_ANIMATIONS } from '@/u
 import { refreshSpotsAfterDelay, handlePlaceDetailsResponse } from '@/utils/map/mapHelpers';
 import { formatRegisteredSpotData, formatNewSpotData } from '@/utils/planDataFormatter';
 
-const MapWithPlaces = ({ onAddSpot, planId, onSpotDeleted, onMapReady }) => {
+const MapWithPlaces = React.memo(({ onAddSpot, planId, onSpotDeleted, onMapReady }) => {
   const map = useMap();
   const placesLib = useMapsLibrary('places');
   const [zoom, setZoom] = useState(MAP_CONFIG.defaultZoom);
@@ -193,9 +193,9 @@ const MapWithPlaces = ({ onAddSpot, planId, onSpotDeleted, onMapReady }) => {
       />
     </>
   );
-};
+});
 
-export const GoogleMap = ({ onAddSpot, planId, onSpotDeleted, className = '' }) => {
+export const GoogleMap = React.memo(({ onAddSpot, planId, onSpotDeleted, className = '' }) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const [mapInstance, setMapInstance] = useState(null);
 
@@ -295,5 +295,7 @@ export const GoogleMap = ({ onAddSpot, planId, onSpotDeleted, className = '' }) 
       `}</style>
     </div>
   );
-};
+});
+
+export default GoogleMap;
 

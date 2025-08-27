@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback, useMemo } from "react";
 import { Link, useParams } from "react-router-dom"
 import { PlanDetailItem } from "@/components/forms/PlanDetailItem";
 import { PlanOverview } from "@/components/forms/planOverview";
@@ -50,6 +50,42 @@ export function TripPlan() {
     currentDayPlan,
   } = usePlanDetails(planId, totalDays, onSpotDeletedRef);
 
+  // スポット追加時のハイライト処理
+  const handleAddSpotToPlan = useCallback((spotData) => {
+    addSpotToPlan(spotData);
+    
+    // 追加されたアイテムをハイライト
+    const newIndex = currentDayPlan.length;
+    setHighlightedItemIndex(newIndex);
+    
+    // 1秒後にハイライトを解除
+    setTimeout(() => {
+      setHighlightedItemIndex(null);
+    }, 1000);
+    
+    // 成功トースト
+    showSuccess('スポットを追加', `${spotData.name || 'スポット'}をプランに追加しました`);
+  }, [addSpotToPlan, currentDayPlan.length, showSuccess]);
+
+  // 地図コンポーネントを安定化（selectedDayの変更で再レンダリングされないように）
+  const stableGoogleMap = useMemo(() => (
+    <GoogleMap 
+      onAddSpot={handleAddSpotToPlan} 
+      planId={planId} 
+      onSpotDeleted={onSpotDeletedRef}
+    />
+  ), [handleAddSpotToPlan, planId, onSpotDeletedRef]);
+
+  // モバイル用の地図コンポーネント（クラス名付き）
+  const mobileGoogleMap = useMemo(() => (
+    <GoogleMap 
+      onAddSpot={handleAddSpotToPlan} 
+      planId={planId} 
+      onSpotDeleted={onSpotDeletedRef}
+      className="mobile-map"
+    />
+  ), [handleAddSpotToPlan, planId, onSpotDeletedRef]);
+
   // データがロード中の場合
   if (overviewLoading || detailLoading) {
     return (
@@ -100,23 +136,6 @@ export function TripPlan() {
     );
   }
 
-  // スポット追加時のハイライト処理
-  const handleAddSpotToPlan = (spotData) => {
-    addSpotToPlan(spotData);
-    
-    // 追加されたアイテムをハイライト
-    const newIndex = currentDayPlan.length;
-    setHighlightedItemIndex(newIndex);
-    
-    // 1秒後にハイライトを解除
-    setTimeout(() => {
-      setHighlightedItemIndex(null);
-    }, 1000);
-    
-    // 成功トースト
-    showSuccess('スポットを追加', `${spotData.name || 'スポット'}をDay ${selectedDay}に追加しました`);
-  };
-
   // エラー表示
   if (overviewError || detailError) {
     showError('エラーが発生しました', overviewError || detailError);
@@ -130,81 +149,64 @@ export function TripPlan() {
 
   return (
     <>
-      <div className="trip-plan-page" style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'var(--bg)',
-        overflow: 'hidden'
-      }}>
+      <div className="trip-plan-page h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 overflow-hidden">
         {/* ヘッダー（共通） */}
-        <header style={{
-          padding: 'var(--space-4) var(--space-6)',
-          borderBottom: '1px solid var(--outline)',
-          backgroundColor: 'var(--bg)',
-          flexShrink: 0,
-          zIndex: 'var(--z-sticky)'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 'var(--space-3)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+        <header className="px-6 py-8 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md flex-shrink-0 z-50 shadow-sm">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            {/* 左側：タイトル */}
+            <div className="flex-1 min-w-0">
+              <h1 className={`m-0 ${isDesktop ? 'text-4xl' : 'text-3xl'} font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight mb-3`}>
+                旅行プラン作成
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 text-lg">
+                地図からスポットを選択して、理想の旅行プランを作成しましょう
+              </p>
+            </div>
+            
+            {/* 右側：ナビゲーションボタン */}
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Link to="/management">
-                <Button variant="ghost" leftIcon={<IoArrowBack />} size="sm">
+                <Button 
+                  variant="ghost" 
+                  leftIcon={<IoArrowBack />} 
+                  size="sm"
+                  className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                >
                   {isDesktop ? '管理画面へ戻る' : '戻る'}
                 </Button>
               </Link>
-              <h1 style={{
-                margin: 0,
-                fontSize: isDesktop ? 'var(--font-size-2xl)' : 'var(--font-size-xl)',
-                fontWeight: 'var(--font-weight-bold)',
-                color: 'var(--text)'
-              }}>
-                プラン作成
-              </h1>
             </div>
-            
-
           </div>
           
           {/* 旅行概要（デスクトップのみ表示） */}
           {isDesktop && (
-            <div style={{ marginTop: 'var(--space-4)' }}>
-              <PlanOverview
-                tripData={tripData}
-                onPlanOverviewChange={handleInputChange}
-              />
+            <div className="max-w-6xl mx-auto mt-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                <div className="mb-6">
+                  <h2 className="m-0 text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                    旅行の基本情報
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-0">
+                    旅行名と日程を入力してください
+                  </p>
+                </div>
+                <PlanOverview
+                  tripData={tripData}
+                  onPlanOverviewChange={handleInputChange}
+                />
+              </div>
             </div>
           )}
         </header>
 
         {/* メインコンテンツ */}
-        <main style={{
-          flex: 1,
-          overflow: 'hidden',
-          position: 'relative'
-        }}>
+        <main className="flex-1 overflow-hidden relative">
           {/* モバイル レイアウト */}
           {isMobile && (
-            <div style={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
+            <div className="h-full flex flex-col relative">
               {/* 地図（全画面） */}
-              <div style={{
-                flex: 1,
-                position: 'relative'
-              }}>
-                <GoogleMap 
-                  onAddSpot={handleAddSpotToPlan} 
-                  planId={planId} 
-                  onSpotDeleted={onSpotDeletedRef}
-                  className="mobile-map"
-                />
+              <div className="flex-1 relative overflow-hidden">
+                {mobileGoogleMap}
               </div>
               
               {/* PlanPanel（BottomSheet） */}
@@ -225,28 +227,14 @@ export function TripPlan() {
 
           {/* タブレット レイアウト（上下分割） */}
           {isTablet && (
-            <div style={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--space-4)',
-              padding: 'var(--space-4)'
-            }}>
+            <div className="h-full flex flex-col gap-6 p-6">
               {/* 上段: 地図 */}
-              <div style={{
-                height: '60%',
-                borderRadius: 'var(--radius-lg)',
-                overflow: 'hidden'
-              }}>
-                <GoogleMap 
-                  onAddSpot={handleAddSpotToPlan} 
-                  planId={planId} 
-                  onSpotDeleted={onSpotDeletedRef}
-                />
+              <div className="h-[60%] rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
+                {stableGoogleMap}
               </div>
               
               {/* 下段: プラン */}
-              <div style={{ height: '40%' }}>
+              <div className="h-[40%] rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
                 <PlanPanel
                   currentDayPlan={currentDayPlan}
                   selectedDay={selectedDay}
@@ -265,27 +253,14 @@ export function TripPlan() {
 
           {/* デスクトップ レイアウト（左右分割 2:1） */}
           {isDesktop && (
-            <div style={{
-              height: '100%',
-              display: 'flex',
-              gap: 'var(--space-6)',
-              padding: 'var(--space-6)'
-            }}>
+            <div className="h-full flex gap-8 p-8">
               {/* 左側: 地図（2/3） */}
-              <div style={{
-                flex: '2',
-                borderRadius: 'var(--radius-lg)',
-                overflow: 'hidden'
-              }}>
-                <GoogleMap 
-                  onAddSpot={handleAddSpotToPlan} 
-                  planId={planId} 
-                  onSpotDeleted={onSpotDeletedRef}
-                />
+              <div className="flex-[2] rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
+                {stableGoogleMap}
               </div>
               
               {/* 右側: プラン（1/3） */}
-              <div style={{ flex: '1' }}>
+              <div className="flex-1 rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
                 <PlanPanel
                   currentDayPlan={currentDayPlan}
                   selectedDay={selectedDay}

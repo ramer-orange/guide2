@@ -1,5 +1,5 @@
 import { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays } from "@/services/api/planDetailApi";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { v4 as uuid } from "uuid";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
@@ -64,28 +64,27 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
   }, [planId]);
 
   // 追加ボタンが押された時の処理(選択された日のみに初期データを挿入)
-  const handleAddPlan = () => {
-    setPlanContents(prev => (
-      {
-        ...prev,
-        [selectedDay]: [
-          ...prev[selectedDay],
-          createInitialPlanData()
-        ]
-      })
-    )
-  };
+  const handleAddPlan = useCallback(() => {
+    setPlanContents(prev => ({
+      ...prev,
+      [selectedDay]: [
+        ...prev[selectedDay],
+        createInitialPlanData()
+      ]
+    }));
+  }, [selectedDay]);
 
   // マップ上からのスポットをプランに追加する関数
-  const addSpotToPlan = (spotData) => {
+  const addSpotToPlan = useCallback((spotData, targetDay = null) => {
     console.debug('スポットデータを追加:', spotData);
+    const dayToAdd = targetDay || selectedDay;
     const newPlanItem = {
       id: uuid(),
       type: null,
       title: spotData.name || '',
       memo: '',
       arrivalTime: null,
-      order: planContents[selectedDay].length + 1,
+      order: planContents[dayToAdd].length + 1,
       placeId: spotData.placeId || '',
       latitude: spotData.lat || null,
       longitude: spotData.lng || null,
@@ -95,26 +94,24 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     changedPlanDetail.current.set(newPlanItem.id, {
       ...newPlanItem,
       planId: Number(planId),
-      dayNumber: selectedDay,
+      dayNumber: dayToAdd,
     });
     
     setPlanContents(prev => {
       const updated = {
         ...prev,
-        [selectedDay]: [
-          ...prev[selectedDay],
+        [dayToAdd]: [
+          ...prev[dayToAdd],
           newPlanItem
         ]
       };
       
-      // 直接保存処理を実行
-      setTimeout(() => {
-        handlePlanDetailUpdate();
-      }, 0);
+      // 変更フラグを設定
+      isPlanDetailChanged.current = true;
       
       return updated;
     });
-  };
+  }, [planContents, planId]);
 
   // 日数の増減時の処理
   useEffect(() => {
@@ -159,9 +156,11 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     }
   },[totalDays]);
 
+
+
   // 押されたボタンが何日目なのか
-  const handleSelectedDay = (index) => {
-    setSelectedDay(index + 1);
+  const handleSelectedDay = (day) => {
+    setSelectedDay(day);
   }
 
   // 変更されたプラン詳細の内容を追跡

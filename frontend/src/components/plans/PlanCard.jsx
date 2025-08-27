@@ -108,11 +108,6 @@ export const PlanCard = ({ plan, onDelete, index = 0 }) => {
         {/* 詳細情報 */}
         <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
-            <IoLocationOutline size={14} aria-hidden="true" />
-            <span>スポット: {plan.spots_count || 0}</span>
-          </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
             <IoTime size={14} aria-hidden="true" />
             <span>
               {new Date(plan.updated_at).toLocaleDateString('ja-JP', {
