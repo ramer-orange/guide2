@@ -9,8 +9,7 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
-  return `${month}/${day}(${dayOfWeek})`;
+  return `${month}/${day}`;
 };
 
 // 日数計算関数

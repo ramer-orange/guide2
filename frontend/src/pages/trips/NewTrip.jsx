@@ -4,13 +4,10 @@ import { PlanCreateButton } from "@/components/ui/PlanCreateButton";
 import { BackToManagementButton } from "@/components/ui/BackToManagementButton";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { Link } from "react-router-dom";
-import { useBreakpoint } from "@/hooks/useBreakpoint";
-import { IoArrowBack, IoHome } from "react-icons/io5";
 
 // 旅行名と日付を入力するページ
 export function NewTripPage() {
-  const { tripData, error, fieldErrors, isLoading, handleTrip, handleCreate } = useNewTrip();
-  const { isDesktop } = useBreakpoint();
+  const { tripData, error, handleTrip, handleCreate } = useNewTrip();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
@@ -19,7 +16,7 @@ export function NewTripPage() {
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           {/* 左側：タイトル */}
           <div className="flex-1 min-w-0">
-            <h1 className={`m-0 ${isDesktop ? 'text-4xl' : 'text-3xl'} font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight mb-3`}>
+            <h1 className="m-0 text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight mb-3">
               旅行プラン作成
             </h1>
           </div>
@@ -28,13 +25,13 @@ export function NewTripPage() {
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link to="/management">
               <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
-                <IoArrowBack size={16} />
+                ←
                 <span className="hidden sm:inline">管理画面へ戻る</span>
               </button>
             </Link>
             <Link to="/">
               <button className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
-                <IoHome size={20} />
+                🏠
               </button>
             </Link>
           </div>
@@ -58,7 +55,6 @@ export function NewTripPage() {
             <NewTripOverview 
               tripData={tripData} 
               error={error} 
-              fieldErrors={fieldErrors}
               handleTrip={handleTrip} 
             />
           </section>
@@ -66,8 +62,7 @@ export function NewTripPage() {
           {/* 作成ボタンセクション */}
           <div className="text-center">
             <PlanCreateButton 
-              handleCreate={handleCreate} 
-              isLoading={isLoading}
+              handleCreate={handleCreate}
             >
               旅行プランを作成する
             </PlanCreateButton>

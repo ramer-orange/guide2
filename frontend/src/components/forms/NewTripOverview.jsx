@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function NewTripOverview({ tripData, error, fieldErrors = {}, handleTrip }) {
+export function NewTripOverview({ tripData, error, handleTrip }) {
   return (
     <div className="space-y-6">
       {error && (
@@ -34,15 +34,8 @@ export function NewTripOverview({ tripData, error, fieldErrors = {}, handleTrip 
             value={tripData.tripTitle || ''}
             placeholder="例：沖縄旅行、東京出張"
             onChange={handleTrip}
-            className={`w-full px-4 py-3 text-base border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-              fieldErrors.tripTitle 
-                ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700' 
-                : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500'
-            } text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500`}
+            className="w-full px-4 py-3 text-base border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           />
-          {fieldErrors.tripTitle && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.tripTitle}</p>
-          )}
         </div>
 
         {/* 日付入力 */}
@@ -61,15 +54,8 @@ export function NewTripOverview({ tripData, error, fieldErrors = {}, handleTrip 
               name="startDate"
               value={tripData.startDate || ''}
               onChange={handleTrip}
-              className={`w-full px-4 py-3 text-base border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-                fieldErrors.startDate 
-                  ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700' 
-                  : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500'
-              } text-gray-900 dark:text-gray-100`}
+              className="w-full px-4 py-3 text-base border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 text-gray-900 dark:text-gray-100"
             />
-            {fieldErrors.startDate && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.startDate}</p>
-            )}
           </div>
 
           {/* 帰着日 */}
@@ -86,15 +72,8 @@ export function NewTripOverview({ tripData, error, fieldErrors = {}, handleTrip 
               name="endDate"
               value={tripData.endDate || ''}
               onChange={handleTrip}
-              className={`w-full px-4 py-3 text-base border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-                fieldErrors.endDate 
-                  ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700' 
-                  : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500'
-              } text-gray-900 dark:text-gray-100`}
+              className="w-full px-4 py-3 text-base border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500 text-gray-900 dark:text-gray-100"
             />
-            {fieldErrors.endDate && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.endDate}</p>
-            )}
           </div>
         </div>
       </div>

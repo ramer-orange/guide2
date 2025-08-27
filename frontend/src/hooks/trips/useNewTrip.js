@@ -7,22 +7,13 @@ export const useNewTrip = () => {
   const [tripData, setTripData] = useState({});
   const navigate = useNavigate();
   const [error, setError] = useState('');
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleTrip = (e) => {
-    const { name, value } = e.target;
     setTripData({
       ...tripData,
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
-    // 該当フィールドのエラーをクリア
-    if (fieldErrors[name]) {
-      setFieldErrors({
-        ...fieldErrors,
-        [name]: undefined,
-      });
-    }
+    // エラーメッセージをクリア
     setError('');
   };
 
@@ -32,14 +23,11 @@ export const useNewTrip = () => {
       const response = await planOverviewCreate(tripData);
       
       setError('');
-      setFieldErrors({});
       // プランIDのみを渡してTripPlanページに遷移
       navigate(`/trip-plan/${response.data.id}`);
     } catch (error) {
       const { message } = parseError(error, ERROR_MESSAGES.PLAN_CREATE_FAILED);
       setError(message);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -47,8 +35,6 @@ export const useNewTrip = () => {
     tripData,
     setTripData,
     error,
-    fieldErrors,
-    isLoading,
     handleTrip,
     handleCreate,
   };
