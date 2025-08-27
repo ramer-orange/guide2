@@ -16,13 +16,6 @@ export default {
   },
 };
 
-const sampleTripData = {
-  tripTitle: 'サンプル旅行',
-  startDate: '2024-06-01',
-  endDate: '2024-06-03',
-  destination: '東京'
-};
-
 export const Default = {
   args: {
     handleCreate: () => console.log('プラン作成'),
