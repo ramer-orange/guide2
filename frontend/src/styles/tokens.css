@@ -1,0 +1,289 @@
+/**
+ * デザイントークン - 旅行地図アプリ用
+ * ライト/ダークモード対応、レスポンシブ対応
+ */
+
+:root {
+  /* === カラーパレット（ライトモード） === */
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --text: #1a202c;
+  --text-muted: #718096;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --warning: #f59e0b;
+  --warning-hover: #d97706;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --outline: #e5e7eb;
+  --outline-focus: #3b82f6;
+  
+  /* === 状態色 === */
+  --success: var(--accent);
+  --error: var(--danger);
+  --info: var(--primary);
+  
+  /* === 影（エレベーション） === */
+  --elev0: none;
+  --elev1: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --elev2: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --elev3: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --elev4: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* === 角丸 === */
+  --radius: 16px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* === 余白・サイズ === */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  
+  /* === タイポグラフィ === */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* === ブレークポイント（JS用） === */
+  --breakpoint-mobile: 640px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-desktop: 1025px;
+  
+  /* === z-index === */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  
+  /* === アニメーション === */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+  
+  /* === タップ領域最小サイズ === */
+  --tap-target-min: 48px;
+}
+
+/* === ダークモード === */
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --text: #f0f6fc;
+  --text-muted: #8b949e;
+  --primary: #58a6ff;
+  --primary-hover: #409bff;
+  --accent: #3fb950;
+  --accent-hover: #2ea043;
+  --warning: #d29922;
+  --warning-hover: #bb8c16;
+  --danger: #f85149;
+  --danger-hover: #dc3d37;
+  --outline: #30363d;
+  --outline-focus: #58a6ff;
+  
+  /* ダークモード用の影 */
+  --elev1: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --elev2: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --elev3: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --elev4: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+}
+
+/* === レスポンシブブレークポイント用mixins === */
+@media (max-width: 640px) {
+  :root {
+    --current-breakpoint: 'mobile';
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  :root {
+    --current-breakpoint: 'tablet';
+  }
+}
+
+@media (min-width: 1025px) {
+  :root {
+    --current-breakpoint: 'desktop';
+  }
+}
+
+/* === アクセシビリティ：アニメーション削減 === */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 80ms;
+    --duration-slow: 80ms;
+  }
+}
+
+/* === ユーティリティクラス === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tap-target {
+  min-height: var(--tap-target-min);
+  min-width: var(--tap-target-min);
+}
+
+.focus-ring {
+  outline: 2px solid var(--outline-focus);
+  outline-offset: 2px;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--outline-focus);
+  outline-offset: 2px;
+}
+
+/* === レイアウトユーティリティ === */
+.mobile-only {
+  display: block;
+}
+
+.tablet-only {
+  display: none;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .mobile-only {
+    display: none;
+  }
+  .tablet-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 1025px) {
+  .mobile-only {
+    display: none;
+  }
+  .tablet-only {
+    display: none;
+  }
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* === アニメーションユーティリティ === */
+.fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-out);
+}
+
+.slide-up {
+  animation: slideUp var(--duration-normal) var(--ease-out);
+}
+
+.slide-right {
+  animation: slideRight var(--duration-normal) var(--ease-out);
+}
+
+.scale-in {
+  animation: scaleIn var(--duration-fast) var(--ease-out);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideRight {
+  from {
+    transform: translateX(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* === Chakra UI統合用のトークンマッピング === */
+.chakra-theme {
+  --chakra-colors-primary-500: var(--primary);
+  --chakra-colors-primary-600: var(--primary-hover);
+  --chakra-colors-green-500: var(--accent);
+  --chakra-colors-green-600: var(--accent-hover);
+  --chakra-colors-orange-500: var(--warning);
+  --chakra-colors-red-500: var(--danger);
+  --chakra-colors-gray-100: var(--surface);
+  --chakra-colors-gray-500: var(--text-muted);
+  --chakra-colors-gray-700: var(--text);
+  --chakra-colors-gray-800: var(--bg);
+  --chakra-radii-md: var(--radius);
+  --chakra-radii-lg: var(--radius-lg);
+  --chakra-shadows-md: var(--elev2);
+  --chakra-shadows-lg: var(--elev3);
+}

@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import { routesBasic } from '@/routesBasic.jsx'
 import { AuthProvider } from '@/store/AuthContext'
-// import './styles/index.css'
+import './styles/index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

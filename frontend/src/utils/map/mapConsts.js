@@ -4,7 +4,7 @@
 export const MAP_CONFIG = {
   defaultCenter: { lat: 35.6762, lng: 139.6503 }, // 東京
   defaultZoom: 10,
-  size: { width: '600px', height: '500px' },
+  size: { width: '100%', height: '100%' },
   refreshDelay: 500, // スポット更新の遅延時間（ms）
 };
 

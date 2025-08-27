@@ -51,3 +51,4 @@ export const RegisterForm = ({ onSubmit, error, loading }) => {
     </Box>
   );
 };
+
