@@ -63,7 +63,7 @@
    * Base styles for text-like input fields.
    */
   .ui-input-text {
-    @apply p-2 rounded-ui-sm border border-border-primary text-text-primary placeholder:text-text-placeholder;
+    @apply p-1 rounded-ui-sm border border-border-primary text-text-primary placeholder:text-text-placeholder;
     @apply transition-colors duration-ui-fast ease-ui-ease;
     @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-focus;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
@@ -73,7 +73,7 @@
    * Base styles for date input fields.
    */
   .ui-input-date {
-    @apply p-2 rounded-ui-sm border border-border-primary text-text-secondary;
+    @apply p-1 rounded-ui-sm border border-border-primary text-text-secondary;
     @apply transition-colors duration-ui-fast ease-ui-ease;
     @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-focus;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
@@ -110,7 +110,7 @@
    * Icon-only button.
    */
   .ui-button-icon {
-    @apply p-2 text-text-tertiary rounded-ui-md;
+    @apply p-1 text-text-tertiary rounded-ui-md;
     @apply transition-colors duration-ui-fast ease-ui-ease;
     @apply hover:bg-background-tertiary hover:text-text-error;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;

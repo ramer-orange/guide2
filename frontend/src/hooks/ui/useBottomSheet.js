@@ -16,6 +16,13 @@ export const useBottomSheet = ({ snapPoints: snapPointsInVh, initialSnap = 0 }) 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // スナップポイントを直接設定する関数
+  const setSnapIndex = useCallback((index) => {
+    if (index >= 0 && index < snapPoints.length) {
+      setCurrentHeight(snapPoints[index]);
+    }
+  }, [snapPoints]);
+
   const handleDragStart = useCallback((event) => {
     event.preventDefault();
     setIsDragging(true);
@@ -58,5 +65,5 @@ export const useBottomSheet = ({ snapPoints: snapPointsInVh, initialSnap = 0 }) 
     onMouseLeave: handleDragEnd,
   };
 
-  return { sheetStyle, dragHandlers };
+  return { sheetStyle, dragHandlers, setSnapIndex };
 };
