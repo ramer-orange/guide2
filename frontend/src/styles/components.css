@@ -1,0 +1,118 @@
+@layer components {
+  /* ====================================================================
+  // ** Common UI Components
+  // ===================================================================*/
+
+  /*
+   * Base for all buttons to remove default styles and add base features.
+   */
+  .ui-button {
+    @apply inline-flex items-center justify-center select-none;
+    @apply transition-colors duration-ui-fast ease-ui-ease;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /*
+   * Primary action button.
+   */
+  .ui-button-primary {
+    @apply ui-button px-6 py-3 rounded-ui-md font-bold text-text-on-accent;
+    background-image: var(--gradient-accent);
+    @apply transition-all duration-ui-normal ease-ui-ease;
+    @apply hover:shadow-lg hover:-translate-y-px;
+    @apply disabled:opacity-50 disabled:shadow-none disabled:transform-none;
+  }
+
+  /*
+   * Secondary action button.
+   */
+  .ui-button-secondary {
+    @apply ui-button px-4 py-2 rounded-ui-md font-semibold;
+    @apply bg-background-tertiary text-text-primary;
+    @apply hover:bg-border-primary;
+  }
+
+  /*
+   * Ghost button with a border, transparent background.
+   */
+  .ui-button-ghost {
+    @apply ui-button px-4 py-2 rounded-ui-md font-semibold;
+    @apply border border-border-primary text-text-secondary;
+    @apply hover:bg-background-tertiary hover:text-text-primary hover:border-transparent;
+  }
+
+  /*
+   * Floating Action Button (FAB) for mobile.
+   */
+  .ui-button-fab {
+    @apply ui-button w-14 h-14 rounded-full flex items-center justify-center shadow-lg;
+    @apply bg-accent-primary text-text-on-accent;
+    @apply transition-transform duration-ui-normal ease-ui-ease;
+    @apply hover:bg-accent-primary-hover hover:scale-105;
+  }
+
+  /*
+   * Container to constrain content width and center it.
+   */
+  .ui-container {
+    @apply w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /*
+   * Base styles for text-like input fields.
+   */
+  .ui-input-text {
+    @apply p-1 -ml-1 rounded-ui-sm border border-transparent text-text-primary placeholder:text-text-placeholder;
+    @apply transition-colors duration-ui-fast ease-ui-ease;
+    @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-secondary;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
+  }
+
+  /*
+   * Base styles for date input fields.
+   */
+  .ui-input-date {
+    @apply p-1 rounded-ui-sm border border-transparent text-text-secondary;
+    @apply transition-colors duration-ui-fast ease-ui-ease;
+    @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-secondary;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
+  }
+
+  /*
+   * Tab button for day selection.
+   */
+  .ui-tab {
+    @apply px-4 py-2 font-semibold text-sm rounded-ui-md whitespace-nowrap;
+    @apply transition-colors duration-ui-fast ease-ui-ease;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
+  }
+
+  .ui-tab-active {
+    @apply bg-accent-primary text-text-on-accent;
+  }
+
+  .ui-tab-inactive {
+    @apply text-text-secondary hover:bg-background-tertiary hover:text-text-primary;
+  }
+
+  /*
+   * Base card style.
+   */
+  .ui-card {
+    @apply transition-shadow duration-ui-normal;
+    &:hover {
+      @apply shadow-ui-md;
+    }
+  }
+
+  /*
+   * Icon-only button.
+   */
+  .ui-button-icon {
+    @apply p-2 text-text-tertiary rounded-ui-md;
+    @apply transition-colors duration-ui-fast ease-ui-ease;
+    @apply hover:bg-background-tertiary hover:text-text-error;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
+  }
+}
