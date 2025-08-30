@@ -11,23 +11,34 @@ import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 export const routesBasic = createBrowserRouter(
   createRoutesFromElements(
     <>
+      {/* トップページ */}
       <Route path="/" element={<Home />} />
+
+      {/* 管理画面 */}
       <Route path="/management" element={
           <ProtectedRoute>
             <Management />
           </ProtectedRoute>
         }/>
-        <Route path="/trip-plan/:planId" element={
-          <ProtectedRoute>
-            <TripPlan />
-          </ProtectedRoute>
-        }/>
-        <Route path="/new-trip" element={
-          <ProtectedRoute>
-            <NewTripPage />
-          </ProtectedRoute>
-        }/>
+
+      {/* 旅行プラン詳細 */}
+      <Route path="/trip-plan/:planId" element={
+        <ProtectedRoute>
+          <TripPlan />
+        </ProtectedRoute>
+      }/>
+
+      {/* 新規旅行プラン作成 */}
+      <Route path="/new-trip" element={
+        <ProtectedRoute>
+          <NewTripPage />
+        </ProtectedRoute>
+      }/>
+
+      {/* ログインページ */}
       <Route path="/login" element={<Login />} />
+
+      {/* 新規登録ページ */}
       <Route path="/register" element={<Register />} />
     </>
   )
