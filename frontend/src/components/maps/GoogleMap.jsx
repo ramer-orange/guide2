@@ -5,6 +5,7 @@ import { usePlaceSelection } from '@/hooks/maps/usePlaceSelection';
 import { RegisteredSpotInfoWindow } from './RegisteredSpotInfoWindow';
 import { NewSpotInfoWindow } from './NewSpotInfoWindow';
 import { LoadingOverlay } from './LoadingOverlay';
+import { MapToolbar } from './MapToolbar'; // MapToolbarをインポート
 import { MAP_CONFIG, MARKER_ICONS, PLACES_API_FIELDS, CSS_ANIMATIONS } from '@/utils/map/mapConsts';
 import { refreshSpotsAfterDelay, handlePlaceDetailsResponse } from '@/utils/map/mapHelpers';
 import { formatRegisteredSpotData, formatNewSpotData } from '@/utils/planDataFormatter';
@@ -136,19 +137,20 @@ export const GoogleMap = ({ onAddSpot, planId, onSpotDeleted }) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="w-full h-full relative"> {/* `relative` をクラスに変更 */}
       <style>{CSS_ANIMATIONS}</style>
       
       <APIProvider
         apiKey={apiKey}
         libraries={['places']}
       >
+        <MapToolbar /> {/* MapToolbarを配置 */}
         <Map
-          style={MAP_CONFIG.size}
+          className="w-full h-full" /* styleをclassNameに変更 */
           defaultCenter={MAP_CONFIG.defaultCenter}
           defaultZoom={MAP_CONFIG.defaultZoom}
           gestureHandling={'greedy'}
-          disableDefaultUI={false}
+          disableDefaultUI={true} /* デフォルトUIはツールバーで代替するため無効化 */
         >
           <MapWithPlaces onAddSpot={onAddSpot} planId={planId} onSpotDeleted={onSpotDeleted} />
         </Map>

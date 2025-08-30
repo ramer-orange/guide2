@@ -1,6 +1,6 @@
-export function PlanCreateButton({ handleCreate, children }) {
+export function PlanCreateButton({ handleCreate, children, className }) {
   return (
-    <button type="button" onClick={handleCreate}>
+    <button type="button" onClick={handleCreate} className={className}>
       {children}
     </button>
   );

@@ -5,13 +5,16 @@ import { RouterProvider } from 'react-router-dom'
 
 import { routesBasic } from '@/routesBasic.jsx'
 import { AuthProvider } from '@/store/AuthContext'
+import { ToastProvider } from '@/components/ui/ToastProvider'; // ToastProviderをインポート
 import './styles/index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider>
       <AuthProvider>
-        <RouterProvider router={routesBasic} />
+        <ToastProvider>
+          <RouterProvider router={routesBasic} />
+        </ToastProvider>
       </AuthProvider>
     </Provider>
   </StrictMode>

@@ -1,5 +1,5 @@
 import { fetchPlanDetailData, planDetailUpdate, planDelete, bulkPlanDeleteByDays } from "@/services/api/planDetailApi";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { v4 as uuid } from "uuid";
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 
@@ -7,29 +7,49 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
   const [selectedDay, setSelectedDay] = useState(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  // プラン内容を管理
   const [planContents, setPlanContents] = useState({});
 
-  // 入力データが変更されたかどうかを管理
   const isPlanDetailChanged = useRef(false);
 
-  // プラン詳細の初期挿入データを生成
-  const createInitialPlanData = () => ({
+  // createInitialPlanDataをuseCallbackでラップ
+  const createInitialPlanData = useCallback(() => ({
     id: uuid(),
     type: null,
     title: '',
     memo: '',
     arrivalTime: null,
     order: null,
-  });
+  }), []); // 依存配列を空にする
 
-  // DBからプランデータを取得
+  const initializePlanContentsForDays = useCallback((days) => {
+    setPlanContents(prev => {
+      const next = { ...prev };
+      for (let day = 1; day <= days; day++) {
+        if (!(day in next)) {
+          next[day] = [createInitialPlanData()];
+        }
+      }
+      Object.keys(next)
+        .map(Number)
+        .filter(day => day > days)
+        .forEach(day => {
+          delete next[day];
+        });
+      return next;
+    });
+  }, [createInitialPlanData]);
+
+  useEffect(() => {
+    if (selectedDay > totalDays) {
+      setSelectedDay(totalDays);
+    }
+  }, [selectedDay, totalDays]);
+
   useEffect(() => {
     const fetchPlanDetail = async () => {
       try {
         setLoading(true);
         const planDetail = await fetchPlanDetailData(planId);
-        // 取得したプラン詳細を日付ごとにグループ化
         const groupedByDays = planDetail.data.reduce((acc, item) => {
           if (!acc[item.day_number]) {
             acc[item.day_number] = [];
@@ -63,7 +83,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     }
   }, [planId]);
 
-  // 追加ボタンが押された時の処理(選択された日のみに初期データを挿入)
   const handleAddPlan = () => {
     setPlanContents(prev => (
       {
@@ -76,7 +95,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     )
   };
 
-  // マップ上からのスポットをプランに追加する関数
   const addSpotToPlan = (spotData) => {
     console.debug('スポットデータを追加:', spotData);
     const newPlanItem = {
@@ -107,7 +125,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
         ]
       };
       
-      // 直接保存処理を実行
       setTimeout(() => {
         handlePlanDetailUpdate();
       }, 0);
@@ -116,58 +133,12 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     });
   };
 
-  // 日数の増減時の処理
-  useEffect(() => {
-    // 日数が増えた時
-    setPlanContents(prev => {
-      const next = {...prev};
-      for (let day = 1; day <= totalDays; day++) {
-        if(!(day in next)) {
-          next[day] = [createInitialPlanData()]
-        }
-      }
-      return next;
-    });
-
-    // 日数が減った時
-    const next = {...planContents};
-    const deleteDays = Object.keys(next)
-      .map(Number)
-      .filter(day => day > totalDays);
-    if (deleteDays.length > 0) {
-      (async () => {
-        // DB上から削除
-        const result = await handleBulkPlanDeleteByDays(deleteDays, planId)
-        if (result.success) {
-          // UI上から削除
-          setPlanContents(prev => {
-            const next = {...prev};
-            deleteDays.forEach(day => {
-              delete next[day];
-            });
-            return next;
-          });
-        }
-      })();
-    };
-  }, [totalDays]);
-
-  useEffect(() => {
-    // 選択日が範囲外になったら最新の範囲内に戻す
-    if (selectedDay > totalDays ) {
-      setSelectedDay(totalDays);
-    }
-  },[totalDays]);
-
-  // 押されたボタンが何日目なのか
-  const handleSelectedDay = (index) => {
-    setSelectedDay(index + 1);
+  const handleSelectedDay = (dayNumber) => {
+    setSelectedDay(dayNumber);
   }
 
-  // 変更されたプラン詳細の内容を追跡
   const changedPlanDetail = useRef(new Map());
 
-  // 選択中の日のプラン内容（時間または内容）を変更するハンドラ
   const handlePlanChange = (index, e) => {
     const { name, value } = e.target;
     setPlanContents(prev => ({
@@ -175,7 +146,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
       [selectedDay]: prev[selectedDay].map((plan, i) => {
         if (i === index) {
           const updatePlan = {...plan, [name]: value};
-          // 変更されたプランアイテムのIDを追跡
           changedPlanDetail.current.set(plan.id, {
             planId: Number(planId),
             dayNumber: selectedDay,
@@ -193,7 +163,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     isPlanDetailChanged.current = true;
   };
 
-  // 遅延保存処理(プラン詳細)
   useEffect(() => {
     if (!isPlanDetailChanged.current) return;
 
@@ -204,8 +173,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     return () => clearTimeout(timer);
   },[planContents]);
 
-
-  // プラン詳細の更新
   const handlePlanDetailUpdate = async () => {
     const changedItem = changedPlanDetail.current.entries().next();
     if (changedItem.done) {
@@ -217,10 +184,8 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
 
       await planDetailUpdate(payload, planId, planDetailId);
 
-      // 新規作成の場合（UUID）は保存後にDBから最新データを取得してIDを更新
       if (typeof planDetailId === 'string') {
         const updatedData = await fetchPlanDetailData(planId);
-        // 取得したプラン詳細を日付ごとにグループ化
         const groupedByDays = updatedData.data.reduce((acc, item) => {
           if (!acc[item.day_number]) {
             acc[item.day_number] = [];
@@ -253,19 +218,15 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     }
   }
 
-  // プラン詳細データの削除
   const handlePlanDelete = async (index) => {
     try {
       const deletePlanDetailItem = planContents[selectedDay][index];
-      // データベースに存在しないもの(uuidの場合)
       if (typeof deletePlanDetailItem.id !== 'number') {
-        // UI上から削除
         setPlanContents(prev => ({
           ...prev,
           [selectedDay]: prev[selectedDay].filter((_, i) => i !== index)
         }));
         
-        // UUID形式でもマーカー更新処理を実行（マップに表示されている可能性があるため）
         if (onSpotDeleted && onSpotDeleted.current) {
           onSpotDeleted.current(deletePlanDetailItem);
         }
@@ -281,7 +242,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
       setError('');
       console.debug('プランの削除に成功しました:', deletePlanDetailItem);
       
-      // マップのマーカーを更新
       if (onSpotDeleted && onSpotDeleted.current) {
         onSpotDeleted.current(deletePlanDetailItem);
       }
@@ -291,7 +251,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     }
   }
 
-  // 日数削除時、一括でプラン詳細の削除
   const handleBulkPlanDeleteByDays = async (deleteDays, planId) => {
     try {
       await bulkPlanDeleteByDays(deleteDays, planId);
@@ -306,16 +265,14 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     }
   }
 
-  // 現在選択されている日のプランの内容を取得
   useEffect(() => {
-    // 選択された日にプランがない場合、stateに初期データを挿入
     if (!planContents[selectedDay]) {
       setPlanContents(prev => ({
         ...prev,
         [selectedDay]: [createInitialPlanData()]
       }));
     }
-  }, [selectedDay, planContents]);
+  }, [selectedDay, planContents, createInitialPlanData]);
   const currentDayPlan = planContents[selectedDay] || [];
   console.debug('現在選択されている日のプラン:', currentDayPlan);
 
@@ -338,5 +295,6 @@ export const usePlanDetails = (planId, totalDays, onSpotDeleted) => {
     handleBulkPlanDeleteByDays,
     handleSelectedDay,
     currentDayPlan,
+    initializePlanContentsForDays,
   };
 }
