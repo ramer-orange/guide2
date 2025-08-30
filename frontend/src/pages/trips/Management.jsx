@@ -4,20 +4,22 @@ import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 import { usePlanManagement } from "@/hooks/plans/usePlanManagement";
 import { PlanList } from "@/components/plans/PlanList";
 import { Plus, LogOut } from 'lucide-react';
+import { useToast } from '@/components/ui/ToastProvider'; // useToastをインポート
 
 export function Management() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { plans, loading, error, handleDeletePlan } = usePlanManagement();
+  const { showToast } = useToast(); // useToastフックを使用
 
   const handleLogOut = async () => {
     try {
       await logout();
       navigate('/');
+      showToast('ログアウトしました', { type: 'success' }); // 成功時トースト
     } catch (error) {
       const { message } = parseError(error, ERROR_MESSAGES.LOGOUT_FAILED);
-      // TODO: alertをToastコンポーネントに置き換える
-      alert(message);
+      showToast(message, { type: 'error' }); // エラー時トースト
     }
   }
 
