@@ -33,7 +33,7 @@ export function Management() {
                 My Trips
               </h1>
               <p className="text-text-secondary mt-1">
-                ようこそ、{user.name}さん！次の冒険を選びましょう。
+                ようこそ、{user.name}さん！
               </p>
             </div>
             {/* --- Refined Logout Button --- */}
@@ -43,7 +43,7 @@ export function Management() {
               className="inline-flex items-center justify-center px-4 py-2 rounded-full font-semibold border-2 border-transparent text-text-primary transition-all duration-200 ease-in-out group"
             >
               <LogOut className="w-5 h-5 text-text-secondary transition-colors group-hover:text-error" />
-              <span className="ml-2 text-text-secondary transition-colors group-hover:text-error">ログアウト</span>
+              <span className="ml-2 hidden sm:inline text-text-secondary transition-colors group-hover:text-error">ログアウト</span>
             </button>
           </div>
         </header>
@@ -62,9 +62,10 @@ export function Management() {
           <Link to="/new-trip">
             <button 
               aria-label="新しいプランを作成"
-              className="ui-button-primary rounded-full shadow-lg w-16 h-16 flex items-center justify-center"
+              className="ui-button-primary rounded-full shadow-lg w-auto h-16 flex items-center justify-center px-6"
             >
-              <Plus className="w-8 h-8" />
+              <Plus className="w-6 h-6" />
+              <span className="ml-2 text-lg">新規作成</span>
             </button>
           </Link>
         </div>

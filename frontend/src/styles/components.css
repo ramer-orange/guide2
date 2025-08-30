@@ -17,10 +17,10 @@
    * Primary action button.
    */
   .ui-button-primary {
-    @apply ui-button px-6 py-3 rounded-ui-md font-bold text-text-on-accent;
+    @apply ui-button px-8 py-4 rounded-ui-md font-bold text-text-on-accent;
     background-image: var(--gradient-accent);
     @apply transition-all duration-ui-normal ease-ui-ease;
-    @apply hover:shadow-lg hover:-translate-y-px;
+    @apply shadow-lg hover:shadow-xl hover:-translate-y-1;
     @apply disabled:opacity-50 disabled:shadow-none disabled:transform-none;
   }
 
@@ -63,9 +63,9 @@
    * Base styles for text-like input fields.
    */
   .ui-input-text {
-    @apply p-1 -ml-1 rounded-ui-sm border border-transparent text-text-primary placeholder:text-text-placeholder;
+    @apply p-2 rounded-ui-sm border border-border-primary text-text-primary placeholder:text-text-placeholder;
     @apply transition-colors duration-ui-fast ease-ui-ease;
-    @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-secondary;
+    @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-focus;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
   }
 
@@ -73,9 +73,9 @@
    * Base styles for date input fields.
    */
   .ui-input-date {
-    @apply p-1 rounded-ui-sm border border-transparent text-text-secondary;
+    @apply p-2 rounded-ui-sm border border-border-primary text-text-secondary;
     @apply transition-colors duration-ui-fast ease-ui-ease;
-    @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-secondary;
+    @apply hover:border-border-secondary focus:bg-background-secondary focus:border-border-focus;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus focus-visible:ring-offset-background-primary;
   }
 
