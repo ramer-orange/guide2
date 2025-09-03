@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 
@@ -14,7 +13,7 @@ class AuthController extends Controller
      * ユーザーログイン処理
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
     public function login(Request $request): JsonResponse
     {
