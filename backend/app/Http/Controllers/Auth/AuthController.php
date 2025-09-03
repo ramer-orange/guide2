@@ -1,17 +1,22 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     /**
      * ユーザーログイン処理
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -19,24 +24,20 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            // 新しいトークンを生成
-            $token = $user->createToken('auth-token')->plainTextToken;
+            $request->session()->regenerate();
 
             return response()->json([
                 'message' => 'ログインに成功しました',
                 'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                ],
-                'token' => $token
+                    'id' => Auth::user()->id,
+                    'name' => Auth::user()->name,
+                    'email' => Auth::user()->email,
+                ]
             ]);
         }
 
         return response()->json([
-            'message' => '認証に失敗しました'
+            'message' => 'メールアドレスまたは、パスワードが違います。'
         ], 401);
     }
 
@@ -45,8 +46,9 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        // 現在のユーザーのトークンを削除
-        $request->user()->currentAccessToken()->delete();
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'ログアウトしました'
