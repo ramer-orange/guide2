@@ -15,17 +15,9 @@ export const useLogin = () => {
     try {
       await login(data);
       navigate('/management');
-      return { success: true };
     } catch (error) {
       console.error('ログインに失敗しました:', error.response || error);
-      
-      let errorMessage = 'ログインに失敗しました。メールアドレスまたはパスワードが正しくありません。';
-      
-      if (error.response?.status === 422 && error.response?.data?.errors) {
-        // バリデーションエラーの処理
-        const errorMessages = Object.values(error.response.data.errors).flat();
-        errorMessage = errorMessages.join(' ');
-      }
+      const errorMessage = 'ログインに失敗しました。メールアドレスまたはパスワードが正しくありません。';
       
       setError(errorMessage);
       return { success: false, error: errorMessage };
