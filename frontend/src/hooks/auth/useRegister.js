@@ -14,14 +14,9 @@ export const useRegister = () => {
     try {
       const response = await api.post('/register', data);
       
-      // ログイン画面に遷移する前にトークンを保存
-      if (response.data.token) {
-        // トークンが返されている場合はログイン処理も一緒に行う
-        localStorage.setItem('auth_token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        navigate('/management'); // トークンがあれば直接管理画面へ
+      if (response.data.user) {
+        navigate('/management');
       } else {
-        // トークンがなければログイン画面へ
         navigate('/login');
       }
       
