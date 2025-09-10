@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '@/services/api/api';
+import { useAuth } from '@/store/AuthContext';
 
 export const useRegister = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -12,15 +13,8 @@ export const useRegister = () => {
     setLoading(true);
     
     try {
-      const response = await api.post('/register', data);
-      
-      if (response.data.user) {
-        navigate('/management');
-      } else {
-        navigate('/login');
-      }
-      
-      return { success: true };
+      await register(data);
+      navigate('/management');
     } catch (error) {
       console.error('登録に失敗しました:', error);
       

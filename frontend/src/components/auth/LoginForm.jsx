@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormContainer, TextFieldElement, PasswordElement } from 'react-hook-form-mui';
-import { Box, Typography, Button, Alert } from '@mui/material';
+import { Box, Typography, Button, Alert, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 export const LoginForm = ({ onSubmit, error, loading }) => {
   return (
@@ -35,6 +36,16 @@ export const LoginForm = ({ onSubmit, error, loading }) => {
         >
           {loading ? 'ログイン中...' : 'ログイン'}
         </Button>
+        
+        {/* 新規登録へのリンク */}
+        <Box sx={{ mt: 2, textAlign: 'center' }}>
+          <Typography variant="body2">
+            アカウントをお持ちでない方は{' '}
+            <Link component={RouterLink} to="/register">
+              新規登録
+            </Link>
+          </Typography>
+        </Box>
       </FormContainer>
     </Box>
   );

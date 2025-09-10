@@ -25,6 +25,20 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  // 新規登録
+  const register = async (userData) => {
+    try {
+      // CSRFクッキーを取得
+      await web.get('/sanctum/csrf-cookie');
+      // 新規登録リクエスト
+      const response = await api.post('/register', userData);
+      setUser(response.data.user);
+    } catch (error) {
+      console.error('登録失敗:', error);
+      throw error;
+    }
+  };
+
   // ログイン
   const login = async (credentials) => {
     try {
@@ -55,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     isAuthenticated: !!user,
     login,
+    register,
     logout,
   }), [user, loading]);
 
