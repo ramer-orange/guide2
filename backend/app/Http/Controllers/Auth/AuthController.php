@@ -10,6 +10,23 @@ use Illuminate\Http\JsonResponse;
 class AuthController extends Controller
 {
     /**
+     * ユーザー情報を取得
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function user(Request $request): JsonResponse
+    {
+        return response()->json([
+            'user' => [
+                'id' => $request->user()->id,
+                'name' => $request->user()->name,
+                'email' => $request->user()->email,
+            ]
+        ]);
+    }
+
+    /**
      * ユーザーログイン処理
      *
      * @param Request $request

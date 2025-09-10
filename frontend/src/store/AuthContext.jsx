@@ -11,8 +11,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const { data } = await api.get('/user');
-        setUser(data);
+        // CSRFクッキーを取得
+        await web.get('/sanctum/csrf-cookie');
+        const response = await api.get('/user');
+        setUser(response.data.user);
       } catch (error) {
         setUser(null);
         console.error('認証状態の確認エラー:', error);
@@ -30,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       await web.get('/sanctum/csrf-cookie');
       // ログインリクエスト
       const response = await api.post('/login', credentials);
-      setUser(response.data);
+      setUser(response.data.user);
     } catch (error) {
       console.error('ログイン失敗:', error);
       throw error;

@@ -9,9 +9,7 @@ use App\Http\Controllers\PlanDetailController;
 
 // 認証が必要なAPIルート（SPA認証）
 Route::middleware(['web', 'auth:sanctum'])->group(function () {
-    Route::get('/user', function(Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // プラン概要
