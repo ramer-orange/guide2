@@ -1,25 +1,24 @@
 import { useAuth } from "@/store/AuthContext"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { parseError, ERROR_MESSAGES } from '@/utils/errorHandler';
 import { usePlanManagement } from "@/hooks/plans/usePlanManagement";
 import { PlanList } from "@/components/plans/PlanList";
 import { Plus, LogOut } from 'lucide-react';
-import { useToast } from '@/components/ui/ToastProvider'; // useToastをインポート
+import { useToast } from '@/components/ui/ToastProvider';
 
 export function Management() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const { plans, loading, error, handleDeletePlan } = usePlanManagement();
-  const { showToast } = useToast(); // useToastフックを使用
+  const { showToast } = useToast();
 
   const handleLogOut = async () => {
     try {
       await logout();
-      navigate('/');
-      showToast('ログアウトしました', { type: 'success' }); // 成功時トースト
+      // リダイレクトはProtectedRouteで行う
+      showToast('ログアウトしました', { type: 'success' });
     } catch (error) {
       const { message } = parseError(error, ERROR_MESSAGES.LOGOUT_FAILED);
-      showToast(message, { type: 'error' }); // エラー時トースト
+      showToast(message, { type: 'error' });
     }
   }
 

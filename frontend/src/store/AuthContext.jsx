@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedOut, setLoggedOut] = useState(false);
 
   // 認証状態の確認（初期マウント時）
   useEffect(() => {
@@ -60,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('ログアウトエラー:', error);
     } finally {
+      setLoggedOut(true);
       setUser(null);
     }
   };
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(() => ({
     user,
     loading,
+    loggedOut,
     isAuthenticated: !!user,
     login,
     register,
